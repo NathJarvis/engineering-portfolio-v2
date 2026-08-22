@@ -22,9 +22,9 @@ export const POST = async ({ request, redirect }) => {
   try {
     // 3. Send the email to yourself
     await transporter.sendMail({
-      from: `"Portfolio Contact" <${import.meta.env.EMAIL_USER}>`,
+      from: import.meta.env.EMAIL_USER, // Must match the authenticated user verbatim
       to: import.meta.env.EMAIL_USER, 
-      replyTo: email, 
+      replyTo: email, // This keeps the client's email safe for you to hit "Reply"
       subject: `Portfolio Brief: ${scope} - ${name}`,
       text: `Name: ${name}\nEmail: ${email}\nScope: ${scope}\n\nMessage:\n${message}`,
     });
