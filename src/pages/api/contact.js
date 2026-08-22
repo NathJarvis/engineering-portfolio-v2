@@ -21,12 +21,34 @@ export const POST = async ({ request, redirect }) => {
 
   try {
     // 3. Send the email to yourself
+    // 3. Send the formatted HTML email to yourself
     await transporter.sendMail({
-      from: import.meta.env.EMAIL_USER, // Must match the authenticated user verbatim
+      from: `"Portfolio Contact" <${import.meta.env.EMAIL_USER}>`,
       to: import.meta.env.EMAIL_USER, 
-      replyTo: email, // This keeps the client's email safe for you to hit "Reply"
-      subject: `Portfolio Brief: ${scope} - ${name}`,
-      text: `Name: ${name}\nEmail: ${email}\nScope: ${scope}\n\nMessage:\n${message}`,
+      replyTo: email, 
+      subject: `🚀 New Project Brief: ${scope} - ${name}`,
+      text: `Name: ${name}\nEmail: ${email}\nScope: ${scope}\n\nMessage:\n${message}`, // Fallback for plain-text readers
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+          <h2 style="color: #0f172a; border-bottom: 2px solid #3b82f6; padding-bottom: 10px; margin-top: 0;">New Project Brief Received</h2>
+          
+          <div style="background-color: #ffffff; padding: 20px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+            <p style="margin: 0 0 10px 0;"><strong style="color: #475569; width: 80px; display: inline-block;">Name:</strong> <span style="color: #0f172a; font-size: 16px;">${name}</span></p>
+            <p style="margin: 0 0 10px 0;"><strong style="color: #475569; width: 80px; display: inline-block;">Email:</strong> <a href="mailto:${email}" style="color: #3b82f6; text-decoration: none;">${email}</a></p>
+            <p style="margin: 0 0 20px 0;"><strong style="color: #475569; width: 80px; display: inline-block;">Scope:</strong> <span style="background-color: #eff6ff; color: #1d4ed8; padding: 4px 8px; border-radius: 4px; font-weight: bold;">${scope}</span></p>
+            
+            <div style="border-top: 1px solid #e2e8f0; padding-top: 15px; margin-top: 15px;">
+              <p style="color: #475569; margin: 0 0 8px 0; font-weight: bold;">Message:</p>
+              <p style="color: #334155; line-height: 1.6; background-color: #f1f5f9; padding: 15px; border-radius: 6px; margin: 0; white-space: pre-wrap;">${message}</p>
+            </div>
+          </div>
+          
+          <p style="color: #94a3b8; font-size: 12px; text-align: center; margin-top: 20px;">
+            This email was sent from your 3D engineering portfolio contact form.<br>
+            You can hit <strong>Reply</strong> to respond directly to ${name}.
+          </p>
+        </div>
+      `,
     });
     
     // 4. Redirect back to the contact page after sending
