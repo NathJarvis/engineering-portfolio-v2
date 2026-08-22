@@ -10,7 +10,7 @@ export const POST = async ({ request, redirect }) => {
 
   // 2. Set up the email server using your Vercel Environment Variables
   const transporter = nodemailer.createTransport({
-    host: 'smtp.zoho.com', // Let's try the global server just in case
+    host: 'smtp.zoho.com', // Zoho global server
     port: 465,
     secure: true,
     auth: {
@@ -35,3 +35,4 @@ export const POST = async ({ request, redirect }) => {
     console.error("Mail error:", error);
     return redirect('/contact?status=error');
   }
+};
