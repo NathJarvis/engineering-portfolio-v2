@@ -10,12 +10,14 @@ export const POST = async ({ request, redirect }) => {
 
   // 2. Set up the email server using your Vercel Environment Variables
   const transporter = nodemailer.createTransport({
-    service: 'gmail', // Change this if you aren't using a Gmail address
-    auth: {
-      user: import.meta.env.EMAIL_USER,
-      pass: import.meta.env.EMAIL_PASS,
-    },
-  });
+  host: 'smtp.zoho.eu', // Zoho's European server
+  port: 465,
+  secure: true,
+  auth: {
+    user: import.meta.env.EMAIL_USER,
+    pass: import.meta.env.EMAIL_PASS,
+  },
+});
 
   try {
     // 3. Send the email to yourself
