@@ -1,0 +1,70 @@
+---
+const pathname = new URL(Astro.request.url).pathname;
+const currentPath = pathname.slice(1); // remove leading slash
+---
+
+<header class="hud-nav">
+  <div class="nav-container">
+    <a href="/" class="nav-brand">
+      <span class="brand-bracket">[</span> NJ // ACABE <span class="brand-bracket">]</span>
+    </a>
+
+    <nav class="nav-links">
+      <a href="/" class={currentPath === "" ? "active" : ""}>GRID // HOME</a>
+      <a href="/about" class={currentPath === "about" ? "active" : ""}>01 // PROFILE</a>
+      <a href="/blog" class={currentPath === "blog" ? "active" : ""}>02 // AUDITS</a>
+      <a href="/research" class={currentPath === "research" ? "active" : ""}>03 // PAPERS</a>
+      <a href="/contact" class={currentPath === "contact" ? "active" : ""}>04 // COMMS</a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .hud-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(3, 7, 18, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+    padding: 0.75rem 0;
+  }
+  .nav-container {
+    width: min(1280px, 94vw);
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .nav-brand {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #f8fafc;
+    text-decoration: none;
+    letter-spacing: 0.1em;
+  }
+  .brand-bracket {
+    color: var(--neon-cyan, #38bdf8);
+  }
+  .nav-links {
+    display: flex;
+    gap: 1.5rem;
+  }
+  .nav-links a {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.75rem;
+    color: #94a3b8;
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    transition: color 0.2s ease;
+  }
+  .nav-links a:hover, .nav-links a.active {
+    color: var(--neon-cyan, #38bdf8);
+  }
+  @media (max-width: 768px) {
+    .nav-links {
+      gap: 0.75rem;
+    }
+  }
+</style>

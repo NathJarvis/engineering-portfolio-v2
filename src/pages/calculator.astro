@@ -1,0 +1,575 @@
+---
+import '../styles/global.css';
+import Footer from '../components/Footer.astro';
+import { CIBSE_GUIDE_M_DATA } from '../data/cibseGuideMData';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta
+			name="description"
+			content="Interactive CIBSE Guide M / RICS NRM3 Asset Lifecycle & Forward Replacement Calculator by Nathan Jarvis, ACABE. Models component degradation, maintenance factors, and inflation escalation."
+		/>
+		<title>Station 05 // Plant Lifecycle Modeler (CIBSE Guide M) - Nathan Jarvis, ACABE</title>
+		<style>
+			:root {
+				--neon-cyan: #38bdf8;
+				--neon-blue: #60a5fa;
+				--neon-emerald: #34d399;
+				--neon-amber: #f59e0b;
+				--neon-rose: #f43f5e;
+				--hud-bg: rgba(7, 12, 24, 0.88);
+				--hud-border: rgba(56, 189, 248, 0.25);
+				--font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+				--font-display: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+			}
+
+			* {
+				box-sizing: border-box;
+				margin: 0;
+				padding: 0;
+			}
+
+			body {
+				background: #030712;
+				min-height: 100vh;
+				display: flex;
+				flex-direction: column;
+				user-select: text;
+			}
+
+			.responsive-shell {
+				width: min(1440px, 95vw);
+				margin: 0 auto;
+				padding: clamp(1.5rem, 2.5vw, 3rem) 0 4rem;
+				flex: 1;
+			}
+
+			.back-btn {
+				display: inline-flex;
+				align-items: center;
+				gap: 0.5rem;
+				font-size: 0.85rem;
+				color: var(--neon-cyan);
+				margin-bottom: 2.5rem;
+				padding: 0.5rem 1rem;
+				background: rgba(56, 189, 248, 0.08);
+				border: 1px solid var(--hud-border);
+				border-radius: 4px;
+				transition: background 0.15s ease, border-color 0.15s ease;
+				text-decoration: none;
+				font-family: var(--font-mono);
+			}
+
+			.back-btn:hover {
+				background: rgba(56, 189, 248, 0.18);
+				border-color: #7dd3fc;
+			}
+
+			.station-grid {
+				display: grid;
+				grid-template-columns: minmax(280px, 340px) minmax(0, 1fr);
+				gap: clamp(2rem, 3.5vw, 4rem);
+				align-items: start;
+			}
+
+			.hud-sidebar {
+				position: sticky;
+				top: 2rem;
+				background: var(--hud-bg);
+				border: 1px solid var(--hud-border);
+				border-radius: 8px;
+				padding: 1.75rem;
+				backdrop-filter: blur(12px);
+			}
+
+			.sidebar-header {
+				font-size: 0.75rem;
+				color: var(--neon-cyan);
+				letter-spacing: 0.12em;
+				margin-bottom: 1.25rem;
+				border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+				padding-bottom: 0.6rem;
+				font-family: var(--font-mono);
+			}
+
+			.meta-row {
+				margin-bottom: 1.25rem;
+			}
+
+			.meta-label {
+				font-size: 0.72rem;
+				color: #94a3b8;
+				text-transform: uppercase;
+				letter-spacing: 0.08em;
+				margin-bottom: 0.25rem;
+				font-family: var(--font-mono);
+			}
+
+			.meta-val {
+				font-size: 0.88rem;
+				color: #f8fafc;
+				line-height: 1.45;
+			}
+
+			.status-pill {
+				display: inline-block;
+				background: rgba(52, 211, 153, 0.15);
+				border: 1px solid rgba(52, 211, 153, 0.5);
+				color: #34d399;
+				padding: 0.25rem 0.6rem;
+				border-radius: 4px;
+				font-size: 0.75rem;
+				font-family: var(--font-mono);
+			}
+
+			.main-stream {
+				background: rgba(7, 12, 24, 0.75);
+				border: 1px solid var(--hud-border);
+				border-radius: 8px;
+				padding: clamp(2rem, 4vw, 4rem);
+				min-width: 0;
+			}
+
+			.page-tag {
+				font-size: 0.8rem;
+				color: var(--neon-amber);
+				letter-spacing: 0.1em;
+				margin-bottom: 0.5rem;
+				font-family: var(--font-mono);
+			}
+
+			.page-title {
+				font-family: var(--font-display);
+				font-size: clamp(2rem, 3.2vw, 3.2rem);
+				line-height: 1.25;
+				color: #f8fafc;
+				margin-bottom: 1.75rem;
+			}
+
+			.page-lead {
+				font-size: clamp(1rem, 1.25vw, 1.2rem);
+				color: #e2e8f0;
+				line-height: 1.85;
+				border-left: 4px solid var(--neon-amber);
+				background: rgba(245, 158, 11, 0.05);
+				padding: 1.5rem 1.75rem;
+				border-radius: 0 8px 8px 0;
+				margin-bottom: 3rem;
+			}
+
+			.calc-grid {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: 2.5rem;
+			}
+
+			.calc-inputs-panel,
+			.calc-results-panel {
+				background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(7, 12, 24, 0.95) 100%);
+				border: 1px solid var(--hud-border);
+				border-radius: 8px;
+				padding: 2rem;
+			}
+
+			.panel-title {
+				font-family: var(--font-display);
+				font-size: 1.15rem;
+				font-weight: 700;
+				color: #f8fafc;
+				margin-bottom: 1.5rem;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+				padding-bottom: 0.75rem;
+			}
+
+			.form-group {
+				margin-bottom: 1.25rem;
+				display: flex;
+				flex-direction: column;
+				gap: 0.4rem;
+			}
+
+			.form-label {
+				font-family: var(--font-mono);
+				font-size: 0.72rem;
+				color: #94a3b8;
+				text-transform: uppercase;
+				letter-spacing: 0.06em;
+			}
+
+			.form-select,
+			.form-input {
+				background: rgba(15, 23, 42, 0.9);
+				border: 1px solid var(--hud-border);
+				border-radius: 4px;
+				padding: 0.75rem 1rem;
+				color: #f8fafc;
+				font-family: inherit;
+				font-size: 0.92rem;
+				outline: none;
+				transition: border-color 0.2s ease, box-shadow 0.2s ease;
+			}
+
+			.form-select:focus,
+			.form-input:focus {
+				border-color: var(--neon-cyan);
+				box-shadow: 0 0 10px rgba(56, 189, 248, 0.25);
+			}
+
+			.standards-badge-bar {
+				display: flex;
+				gap: 0.6rem;
+				margin-top: 0.35rem;
+				margin-bottom: 0.5rem;
+				font-family: var(--font-mono);
+				font-size: 0.7rem;
+			}
+
+			.std-badge {
+				background: rgba(56, 189, 248, 0.1);
+				border: 1px solid rgba(56, 189, 248, 0.25);
+				padding: 0.2rem 0.5rem;
+				border-radius: 3px;
+				color: var(--neon-cyan);
+			}
+
+			.metric-card-row {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				gap: 1rem;
+				margin-bottom: 1.5rem;
+			}
+
+			.metric-card {
+				background: rgba(3, 7, 18, 0.6);
+				border: 1px solid var(--hud-border);
+				border-radius: 6px;
+				padding: 1rem;
+				display: flex;
+				flex-direction: column;
+			}
+
+			.metric-card.highlight {
+				border-color: var(--neon-cyan);
+				background: rgba(56, 189, 248, 0.04);
+			}
+
+			.metric-card-label {
+				font-family: var(--font-mono);
+				font-size: 0.68rem;
+				color: #94a3b8;
+				text-transform: uppercase;
+				margin-bottom: 0.35rem;
+			}
+
+			.metric-card-val {
+				font-family: var(--font-mono);
+				font-size: 1.5rem;
+				font-weight: 700;
+				color: #f8fafc;
+			}
+
+			.progress-track {
+				width: 100%;
+				height: 8px;
+				background: rgba(255, 255, 255, 0.1);
+				border-radius: 4px;
+				overflow: hidden;
+				margin-top: 1.5rem;
+				margin-bottom: 0.5rem;
+			}
+
+			.progress-fill {
+				height: 100%;
+				width: 0%;
+				background: linear-gradient(90deg, var(--neon-emerald), var(--neon-amber), var(--neon-rose));
+				transition: width 0.4s ease;
+			}
+
+			.lifecycle-status-pill {
+				display: block;
+				text-align: center;
+				font-family: var(--font-mono);
+				font-size: 0.75rem;
+				padding: 0.5rem;
+				border-radius: 4px;
+				margin-top: 1rem;
+			}
+
+			@media (max-width: 1024px) {
+				.station-grid {
+					grid-template-columns: 1fr;
+					gap: 2rem;
+				}
+				.hud-sidebar {
+					position: static;
+				}
+				.calc-grid {
+					grid-template-columns: 1fr;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<main class="responsive-shell">
+			<a href="/" class="back-btn" aria-label="Return to Command Telemetry Grid Home">
+				← RETURN TO COMMAND GRID
+			</a>
+
+			<div class="station-grid">
+				<aside class="hud-sidebar" aria-label="Engineering Standards & Frameworks">
+					<div class="sidebar-header">FRAMEWORK TELEMETRY</div>
+
+					<div class="meta-row">
+						<div class="meta-label">PRIMARY BENCHMARK</div>
+						<div class="meta-val">CIBSE Guide M (Table 12.A1)</div>
+					</div>
+
+					<div class="meta-row">
+						<div class="meta-label">STRUCTURE ALIGNMENT</div>
+						<div class="meta-val" style="color: var(--neon-cyan);">RICS NRM3 &amp; BESA SFG20</div>
+					</div>
+
+					<div class="meta-row">
+						<div class="meta-label">DEPRECIATION MODEL</div>
+						<div class="meta-val">SFG20 Maintenance &amp; Operating Deratings</div>
+					</div>
+
+					<div class="meta-row">
+						<div class="meta-label">LIFECYCLE COSTING</div>
+						<div class="meta-val">BS 8544:2013 In-Use Maintenance Plan</div>
+					</div>
+
+					<div class="meta-row">
+						<div class="meta-label">STATUS</div>
+						<div class="meta-val"><span class="status-pill">STATIC // CLIENT-SIDE COMPUTED</span></div>
+					</div>
+				</aside>
+
+				<section class="main-stream">
+					<div class="page-tag">STATION // 05 // LIFECYCLE MODELER</div>
+					<h1 class="page-title">CIBSE Guide M Asset Lifecycle &amp; Forward Capex Tool</h1>
+					<p class="page-lead">
+						Empirical lifecycle depreciation calculator evaluating remaining service life (RSL), maintenance derating multipliers, and forward replacement capex across all commercial building engineering services.
+					</p>
+
+					<div class="calc-grid">
+						<!-- Input Form -->
+						<div class="calc-inputs-panel">
+							<div class="panel-title">
+								<span>PLANT PARAMETERS</span>
+								<span style="color: var(--neon-cyan); font-family: var(--font-mono); font-size: 0.72rem;">SPECIFICATION</span>
+							</div>
+
+							<div class="form-group">
+								<label class="form-label" for="discipline-select">1. Engineering Discipline</label>
+								<select id="discipline-select" class="form-select">
+									{CIBSE_GUIDE_M_DATA.map((cat, idx) => (
+										<option value={idx}>{cat.category}</option>
+									))}
+								</select>
+							</div>
+
+							<div class="form-group">
+								<label class="form-label" for="asset-select">2. Maintainable Asset Component</label>
+								<select id="asset-select" class="form-select"></select>
+								<div class="standards-badge-bar">
+									<span class="std-badge" id="badge-nrm">NRM3: --</span>
+									<span class="std-badge" id="badge-sfg">SFG20: --</span>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<label class="form-label" for="install-year">3. Installation Year</label>
+								<input type="number" id="install-year" class="form-input" value="2016" min="1980" max="2026" />
+							</div>
+
+							<div class="form-group">
+								<label class="form-label" for="maint-factor">4. Maintenance Regime Factor</label>
+								<select id="maint-factor" class="form-select">
+									<option value="1.15">Comprehensive SFG20 PPM (+15% Life Extension)</option>
+									<option value="1.0" selected>Standard Manufacturer Guidelines (Baseline 1.0)</option>
+									<option value="0.75">Reactive / Neglected Maintenance (-25% Life Penalty)</option>
+								</select>
+							</div>
+
+							<div class="form-group">
+								<label class="form-label" for="env-factor">5. Operating Environment</label>
+								<select id="env-factor" class="form-select">
+									<option value="1.05">Benign / Clean Plant Room (+5% Life)</option>
+									<option value="1.0" selected>Standard Commercial Envelope (Baseline 1.0)</option>
+									<option value="0.8">Harsh / Corrosive / Coastal / High Particulate (-20% Penalty)</option>
+								</select>
+							</div>
+
+							<div class="form-group">
+								<label class="form-label" for="inflation-rate">6. Capex Escalation / Inflation Rate (%)</label>
+								<input type="number" id="inflation-rate" class="form-input" value="4.5" step="0.1" min="0" />
+							</div>
+						</div>
+
+						<!-- Results Output -->
+						<div class="calc-results-panel">
+							<div class="panel-title">
+								<span>ENGINEERING APPRAISAL</span>
+								<span style="color: var(--neon-emerald); font-family: var(--font-mono); font-size: 0.72rem;">BS 8544 OUTPUT</span>
+							</div>
+
+							<div class="metric-card-row">
+								<div class="metric-card">
+									<span class="metric-card-label">Current Asset Age</span>
+									<span class="metric-card-val" id="out-age">10.0 yrs</span>
+								</div>
+								<div class="metric-card">
+									<span class="metric-card-label">Effective Life Expectancy</span>
+									<span class="metric-card-val" id="out-life">20.0 yrs</span>
+								</div>
+							</div>
+
+							<div class="metric-card-row">
+								<div class="metric-card highlight">
+									<span class="metric-card-label">Remaining Useful Life (RUL)</span>
+									<span class="metric-card-val" id="out-rul" style="color: var(--neon-cyan);">10.0 yrs</span>
+								</div>
+								<div class="metric-card">
+									<span class="metric-card-label">Target Renewal Year</span>
+									<span class="metric-card-val" id="out-target-year">2036</span>
+								</div>
+							</div>
+
+							<div class="metric-card" style="margin-bottom: 1rem;">
+								<span class="metric-card-label">Forward Replacement Capex (Escalated)</span>
+								<span class="metric-card-val" id="out-cost" style="color: var(--neon-emerald);">£34,178</span>
+							</div>
+
+							<div class="form-label" style="display:flex; justify-content:space-between;">
+								<span>LIFECYCLE CONSUMPTION RATIO</span>
+								<span id="out-pct">50%</span>
+							</div>
+							<div class="progress-track">
+								<div class="progress-fill" id="progress-bar"></div>
+							</div>
+
+							<div id="status-pill-indicator" class="lifecycle-status-pill">
+								NOMINAL OPERATION &bull; ROUTINE PPM
+							</div>
+						</div>
+					</div>
+				</section>
+			</div>
+		</main>
+		<Footer />
+
+		<script define:vars={{ dataset: CIBSE_GUIDE_M_DATA }}>
+			const currentYear = 2026;
+			const discSelect = document.getElementById('discipline-select');
+			const assetSelect = document.getElementById('asset-select');
+			const badgeNrm = document.getElementById('badge-nrm');
+			const badgeSfg = document.getElementById('badge-sfg');
+
+			function populateAssets() {
+				const catIdx = parseInt(discSelect.value) || 0;
+				const category = dataset[catIdx];
+				assetSelect.innerHTML = '';
+
+				category.items.forEach((item, idx) => {
+					const opt = document.createElement('option');
+					opt.value = idx.toString();
+					opt.textContent = `${item.name} (${item.rsl} yrs)`;
+					opt.setAttribute('data-rsl', item.rsl.toString());
+					opt.setAttribute('data-cost', item.baseCost.toString());
+					opt.setAttribute('data-nrm', item.nrmCode);
+					opt.setAttribute('data-sfg', item.sfgCode);
+					assetSelect.appendChild(opt);
+				});
+
+				updateBadges();
+				computeLifecycle();
+			}
+
+			function updateBadges() {
+				const opt = assetSelect.selectedOptions[0];
+				if (opt) {
+					badgeNrm.textContent = `NRM3: ${opt.getAttribute('data-nrm') || '5.x'}`;
+					badgeSfg.textContent = `SFG20: ${opt.getAttribute('data-sfg') || 'Std'}`;
+				}
+			}
+
+			function computeLifecycle() {
+				const opt = assetSelect.selectedOptions[0];
+				if (!opt) return;
+
+				const baseLife = parseFloat(opt.getAttribute('data-rsl') || '20');
+				const baseCost = parseFloat(opt.getAttribute('data-cost') || '25000');
+				
+				const installYear = parseInt(document.getElementById('install-year').value) || currentYear;
+				const maintFactor = parseFloat(document.getElementById('maint-factor').value);
+				const envFactor = parseFloat(document.getElementById('env-factor').value);
+				const inflationRate = (parseFloat(document.getElementById('inflation-rate').value) || 0) / 100;
+
+				const currentAge = Math.max(0, currentYear - installYear);
+				const effectiveLife = Math.round(baseLife * maintFactor * envFactor * 10) / 10;
+				const remainingUsefulLife = Math.round((effectiveLife - currentAge) * 10) / 10;
+				const targetYear = Math.round(installYear + effectiveLife);
+
+				const yearsToInflation = Math.max(0, targetYear - currentYear);
+				const escalatedCost = Math.round(baseCost * Math.pow(1 + inflationRate, yearsToInflation));
+
+				const consumptionPct = Math.min(100, Math.max(0, Math.round((currentAge / effectiveLife) * 100)));
+
+				document.getElementById('out-age').textContent = `${currentAge.toFixed(1)} yrs`;
+				document.getElementById('out-life').textContent = `${effectiveLife.toFixed(1)} yrs`;
+				
+				const rulEl = document.getElementById('out-rul');
+				rulEl.textContent = `${remainingUsefulLife > 0 ? remainingUsefulLife.toFixed(1) : '0.0'} yrs`;
+				
+				document.getElementById('out-target-year').textContent = targetYear.toString();
+				document.getElementById('out-cost').textContent = `£${escalatedCost.toLocaleString('en-GB')}`;
+				document.getElementById('out-pct').textContent = `${consumptionPct}%`;
+				
+				document.getElementById('progress-bar').style.width = `${consumptionPct}%`;
+
+				const indicator = document.getElementById('status-pill-indicator');
+				if (remainingUsefulLife <= 0) {
+					rulEl.style.color = '#f43f5e';
+					indicator.style.background = 'rgba(244, 63, 94, 0.15)';
+					indicator.style.border = '1px solid #f43f5e';
+					indicator.style.color = '#f43f5e';
+					indicator.textContent = 'RUN-TO-FAIL CRITICAL • IMMEDIATE CAPITAL REPLACEMENT';
+				} else if (remainingUsefulLife <= 3) {
+					rulEl.style.color = '#f59e0b';
+					indicator.style.background = 'rgba(245, 158, 11, 0.15)';
+					indicator.style.border = '1px solid #f59e0b';
+					indicator.style.color = '#f59e0b';
+					indicator.textContent = 'CAPITAL RENEWAL WINDOW • FORWARD PLANNING ACTIVE';
+				} else {
+					rulEl.style.color = '#38bdf8';
+					indicator.style.background = 'rgba(52, 211, 153, 0.12)';
+					indicator.style.border = '1px solid #34d399';
+					indicator.style.color = '#34d399';
+					indicator.textContent = 'NOMINAL LIFECYCLE • ROUTINE SFG20 MAINTENANCE';
+				}
+			}
+
+			discSelect.addEventListener('change', populateAssets);
+			assetSelect.addEventListener('change', () => {
+				updateBadges();
+				computeLifecycle();
+			});
+
+			['install-year', 'maint-factor', 'env-factor', 'inflation-rate'].forEach(id => {
+				const el = document.getElementById(id);
+				el?.addEventListener('input', computeLifecycle);
+				el?.addEventListener('change', computeLifecycle);
+			});
+
+			populateAssets();
+		</script>
+	</body>
+</html>

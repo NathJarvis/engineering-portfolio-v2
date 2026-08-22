@@ -1,0 +1,88 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="terminal-footer">
+  <div class="footer-container">
+    <div class="footer-left">
+      <span class="status-pulse"></span>
+      <span class="copyright">&copy; {currentYear} Nathan Jarvis &bull; Building Services &amp; Research</span>
+    </div>
+    
+    <div class="footer-right">
+      <span class="system-status">SYS_STATUS: NOMINAL</span>
+      <div class="footer-links">
+        <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">LINKEDIN ↗</a>
+        <a href="https://github.com" target="_blank" rel="noopener noreferrer">GITHUB ↗</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .terminal-footer {
+    width: 100%;
+    margin-top: auto; /* Glues footer to the bottom of the viewport when content is short */
+    border-top: 1px solid var(--hud-border, rgba(56, 189, 248, 0.25));
+    background: rgba(7, 12, 24, 0.95);
+    backdrop-filter: blur(12px);
+    font-family: var(--font-mono, monospace);
+    padding: 1.5rem 0;
+    box-sizing: border-box;
+  }
+  .footer-container {
+    width: min(92vw, 1720px);
+    margin: 0 auto;
+    padding: 0 clamp(1rem, 2vw, 2.5rem);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    box-sizing: border-box;
+  }
+  .footer-left {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.8rem;
+    color: #94a3b8;
+  }
+  .status-pulse {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--neon-emerald, #34d399);
+    box-shadow: 0 0 6px var(--neon-emerald, #34d399);
+  }
+  .footer-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  .system-status {
+    font-size: 0.75rem;
+    color: var(--neon-cyan, #38bdf8);
+    letter-spacing: 0.08em;
+  }
+  .footer-links {
+    display: flex;
+    gap: 1.25rem;
+    font-size: 0.8rem;
+  }
+  .footer-links a {
+    color: #cbd5e1;
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+  .footer-links a:hover {
+    color: var(--neon-cyan, #38bdf8);
+  }
+
+  @media (max-width: 640px) {
+    .footer-container {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>

@@ -1,0 +1,374 @@
+---
+import '../styles/global.css';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+	frontmatter: {
+		title: string;
+		description: string;
+		publishDate: string;
+		tag?: string;
+		category?: string;
+		typstPdfUrl?: string;
+		externalUrl?: string;
+		readTime?: string;
+	};
+}
+
+const { frontmatter } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="description" content={frontmatter.description} />
+		<title>{frontmatter.title} // M&amp;E Engineering Dossier</title>
+		<style>
+			:root {
+				--neon-cyan: #38bdf8;
+				--neon-blue: #60a5fa;
+				--neon-emerald: #34d399;
+				--neon-amber: #f59e0b;
+				--hud-bg: rgba(7, 12, 24, 0.88);
+				--hud-border: rgba(56, 189, 248, 0.25);
+				--font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+				--font-display: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+			}
+
+			* {
+				box-sizing: border-box;
+				margin: 0;
+				padding: 0;
+			}
+
+			body {
+				background: #030712;
+				min-height: 100vh;
+				display: flex;
+				flex-direction: column;
+				user-select: text;
+			}
+
+			.responsive-shell {
+				width: min(1440px, 95vw);
+				margin: 0 auto;
+				padding: clamp(1.5rem, 2.5vw, 3rem) 0 4rem;
+				flex: 1;
+			}
+
+			.back-btn {
+				display: inline-flex;
+				align-items: center;
+				gap: 0.5rem;
+				font-size: 0.85rem;
+				color: var(--neon-cyan);
+				margin-bottom: 2.5rem;
+				padding: 0.5rem 1rem;
+				background: rgba(56, 189, 248, 0.08);
+				border: 1px solid var(--hud-border);
+				border-radius: 4px;
+				transition: background 0.15s ease, border-color 0.15s ease;
+				text-decoration: none;
+				font-family: var(--font-mono);
+			}
+
+			.back-btn:hover {
+				background: rgba(56, 189, 248, 0.18);
+				border-color: #7dd3fc;
+			}
+
+			.station-grid {
+				display: grid;
+				grid-template-columns: minmax(280px, 340px) minmax(0, 1fr);
+				gap: clamp(2rem, 3.5vw, 3.5rem);
+				align-items: start;
+			}
+
+			/* Sticky Telemetry Sidebar */
+			.hud-sidebar {
+				position: sticky;
+				top: 2rem;
+				background: var(--hud-bg);
+				border: 1px solid var(--hud-border);
+				border-radius: 8px;
+				padding: 1.75rem;
+				backdrop-filter: blur(12px);
+			}
+
+			.sidebar-header {
+				font-size: 0.75rem;
+				color: var(--neon-cyan);
+				letter-spacing: 0.12em;
+				margin-bottom: 1.25rem;
+				border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+				padding-bottom: 0.6rem;
+				font-family: var(--font-mono);
+			}
+
+			.meta-row {
+				margin-bottom: 1.25rem;
+			}
+
+			.meta-label {
+				font-size: 0.72rem;
+				color: #94a3b8;
+				text-transform: uppercase;
+				letter-spacing: 0.08em;
+				margin-bottom: 0.25rem;
+				font-family: var(--font-mono);
+			}
+
+			.meta-val {
+				font-size: 0.88rem;
+				color: #f8fafc;
+				line-height: 1.45;
+			}
+
+			.status-pill {
+				display: inline-block;
+				background: rgba(52, 211, 153, 0.15);
+				border: 1px solid rgba(52, 211, 153, 0.5);
+				color: #34d399;
+				padding: 0.25rem 0.6rem;
+				border-radius: 4px;
+				font-size: 0.75rem;
+				font-family: var(--font-mono);
+			}
+
+			.sidebar-actions {
+				margin-top: 1.5rem;
+				padding-top: 1.25rem;
+				border-top: 1px solid rgba(255, 255, 255, 0.1);
+				display: flex;
+				flex-direction: column;
+				gap: 0.75rem;
+			}
+
+			.sidebar-link-btn {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				font-family: var(--font-mono);
+				font-size: 0.75rem;
+				font-weight: 600;
+				padding: 0.6rem 0.85rem;
+				background: rgba(56, 189, 248, 0.08);
+				border: 1px solid rgba(56, 189, 248, 0.25);
+				border-radius: 4px;
+				color: var(--neon-cyan);
+				text-decoration: none;
+				transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+			}
+
+			.sidebar-link-btn:hover {
+				background: rgba(56, 189, 248, 0.22);
+				border-color: #7dd3fc;
+				color: #ffffff;
+			}
+
+			.sidebar-link-btn.emerald {
+				background: rgba(52, 211, 153, 0.1);
+				border-color: rgba(52, 211, 153, 0.35);
+				color: #34d399;
+			}
+
+			.sidebar-link-btn.emerald:hover {
+				background: rgba(52, 211, 153, 0.22);
+				border-color: #6ee7b7;
+				color: #ffffff;
+			}
+
+			/* Main Dossier Content Stream */
+			.main-stream {
+				background: rgba(7, 12, 24, 0.75);
+				border: 1px solid var(--hud-border);
+				border-radius: 8px;
+				padding: clamp(2rem, 4vw, 4rem);
+				min-width: 0;
+			}
+
+			.page-tag {
+				font-size: 0.8rem;
+				color: var(--neon-blue);
+				letter-spacing: 0.1em;
+				margin-bottom: 0.5rem;
+				font-family: var(--font-mono);
+			}
+
+			.page-title {
+				font-family: var(--font-display);
+				font-size: clamp(2rem, 3.2vw, 3.2rem);
+				line-height: 1.25;
+				color: #f8fafc;
+				margin-bottom: 1.75rem;
+			}
+
+			.page-lead {
+				font-size: clamp(1rem, 1.25vw, 1.2rem);
+				color: #e2e8f0;
+				line-height: 1.85;
+				border-left: 4px solid var(--neon-cyan);
+				background: rgba(56, 189, 248, 0.05);
+				padding: 1.5rem 1.75rem;
+				border-radius: 0 8px 8px 0;
+				margin-bottom: 3rem;
+			}
+
+			/* Article Content Typographics */
+			.article-body {
+				color: #cbd5e1;
+				font-size: clamp(1rem, 1.15vw, 1.1rem);
+				line-height: 1.9;
+			}
+
+			.article-body h2 {
+				font-family: var(--font-display);
+				font-size: clamp(1.4rem, 1.9vw, 1.8rem);
+				color: #f8fafc;
+				margin: 3.25rem 0 1.2rem;
+				border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+				padding-bottom: 0.6rem;
+			}
+
+			.article-body h3 {
+				font-size: 1.25rem;
+				color: #f8fafc;
+				margin: 2.2rem 0 0.8rem;
+			}
+
+			.article-body p {
+				margin-bottom: 1.6rem;
+			}
+
+			.article-body ul,
+			.article-body ol {
+				margin: 1.25rem 0 1.8rem;
+				padding-left: 1.75rem;
+			}
+
+			.article-body li {
+				margin-bottom: 0.75rem;
+			}
+
+			.article-body blockquote {
+				border-left: 4px solid var(--neon-emerald);
+				background: rgba(52, 211, 153, 0.05);
+				padding: 1.25rem 1.5rem;
+				margin: 2rem 0;
+				border-radius: 0 6px 6px 0;
+				font-style: italic;
+				color: #e2e8f0;
+			}
+
+			.article-body table {
+				width: 100%;
+				border-collapse: collapse;
+				margin: 2.5rem 0;
+				font-size: 0.95rem;
+			}
+
+			.article-body th,
+			.article-body td {
+				border: 1px solid rgba(255, 255, 255, 0.12);
+				padding: 0.85rem 1.1rem;
+				text-align: left;
+			}
+
+			.article-body th {
+				background: rgba(15, 23, 42, 0.9);
+				color: var(--neon-cyan);
+				font-family: var(--font-mono);
+				font-size: 0.78rem;
+			}
+
+			@media (max-width: 1024px) {
+				.station-grid {
+					grid-template-columns: 1fr;
+					gap: 2rem;
+				}
+				.hud-sidebar {
+					position: static;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<main class="responsive-shell">
+			<a href="/blog" class="back-btn" aria-label="Return to Field Audit Log Index">
+				← RETURN TO FIELD AUDITS
+			</a>
+
+			<div class="station-grid">
+				<aside class="hud-sidebar" aria-label="Dossier Telemetry & Source Actions">
+					<div class="sidebar-header">DOSSIER TELEMETRY</div>
+
+					<div class="meta-row">
+						<div class="meta-label">CLASSIFICATION</div>
+						<div class="meta-val">{frontmatter.tag || 'DEEP DIVE'}</div>
+					</div>
+
+					<div class="meta-row">
+						<div class="meta-label">ENGINEERING DISCIPLINE</div>
+						<div class="meta-val" style="color: var(--neon-cyan);">{frontmatter.category || 'M&E AUDIT'}</div>
+					</div>
+
+					<div class="meta-row">
+						<div class="meta-label">PUBLICATION DATE</div>
+						<div class="meta-val">
+							<time datetime={frontmatter.publishDate}>
+								{frontmatter.publishDate}
+							</time>
+						</div>
+					</div>
+
+					<div class="meta-row">
+						<div class="meta-label">STATUS</div>
+						<div class="meta-val"><span class="status-pill">VERIFIED FIELD LOG</span></div>
+					</div>
+
+					{
+						(frontmatter.typstPdfUrl || frontmatter.externalUrl) && (
+							<div class="sidebar-actions">
+								{frontmatter.typstPdfUrl && (
+									<a
+										href={frontmatter.typstPdfUrl}
+										class="sidebar-link-btn emerald"
+										target="_blank"
+										rel="noopener noreferrer"
+									>
+										<span>TYPST MANUSCRIPT</span>
+										<span>PDF ↓</span>
+									</a>
+								)}
+								{frontmatter.externalUrl && (
+									<a
+										href={frontmatter.externalUrl}
+										class="sidebar-link-btn"
+										target="_blank"
+										rel="noopener noreferrer"
+									>
+										<span>LINKEDIN ARTICLE</span>
+										<span>↗</span>
+									</a>
+								)}
+							</div>
+						)
+					}
+				</aside>
+
+				<article class="main-stream">
+					<div class="page-tag">STATION // 02 // DOSSIER</div>
+					<h1 class="page-title">{frontmatter.title}</h1>
+					<p class="page-lead">{frontmatter.description}</p>
+
+					<div class="article-body">
+						<slot />
+					</div>
+				</article>
+			</div>
+		</main>
+		<Footer />
+	</body>
+</html>

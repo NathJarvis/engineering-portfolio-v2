@@ -1,0 +1,654 @@
+---
+import '../styles/global.css';
+import Footer from '../components/Footer.astro';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta
+			name="description"
+			content="Nathan Jarvis, ACABE - Building Services Consultant & Engineering Researcher specialising in M&E condition surveys, plant lifecycle asset management, and statutory energy compliance."
+		/>
+		<title>M&amp;E Telemetry Grid // Nathan Jarvis, ACABE - Building Services Engineer</title>
+		<style>
+			:root {
+				--neon-cyan: #38bdf8;
+				--neon-blue: #60a5fa;
+				--neon-emerald: #34d399;
+				--neon-amber: #f59e0b;
+				--hud-bg: rgba(7, 12, 24, 0.88);
+				--hud-border: rgba(56, 189, 248, 0.25);
+				--font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+				--font-display: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+			}
+
+			* {
+				box-sizing: border-box;
+				margin: 0;
+				padding: 0;
+			}
+
+			body {
+				background: #030712;
+				min-height: 100vh;
+				display: flex;
+				flex-direction: column;
+				overflow-x: hidden;
+				user-select: none;
+			}
+
+			/* ==========================================
+			   1. 3D WEBGL TELEMETRY VIEW (> 640px)
+			   ========================================== */
+			#webgl-canvas {
+				position: fixed;
+				inset: 0;
+				width: 100vw;
+				height: 100vh;
+				z-index: 0;
+				outline: none;
+				cursor: grab;
+				touch-action: none;
+				contain: strict;
+			}
+
+			#webgl-canvas:active {
+				cursor: grabbing;
+			}
+
+			#destination-markers-layer {
+				position: fixed;
+				inset: 0;
+				pointer-events: none;
+				z-index: 10;
+				overflow: hidden;
+				contain: strict;
+			}
+
+			.destination-callout {
+				position: absolute;
+				transform: translate(-50%, -100%);
+				display: inline-flex;
+				flex-direction: column;
+				gap: 0.15rem;
+				padding: clamp(0.25rem, 0.8vw, 0.4rem) clamp(0.5rem, 1.2vw, 0.85rem);
+				background: rgba(3, 7, 18, 0.94);
+				border: 1px solid var(--neon-cyan);
+				border-radius: 4px;
+				font-family: var(--font-mono);
+				font-size: clamp(0.62rem, 1.1vw, 0.72rem);
+				letter-spacing: 0.08em;
+				color: #f8fafc;
+				white-space: nowrap;
+				pointer-events: auto;
+				cursor: pointer;
+				text-decoration: none;
+				backdrop-filter: blur(10px);
+				box-shadow: 0 0 16px rgba(56, 189, 248, 0.35);
+				transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+				will-change: left, top;
+			}
+
+			.destination-callout.amber-border {
+				border-color: var(--neon-amber);
+				box-shadow: 0 0 16px rgba(245, 158, 11, 0.35);
+			}
+
+			.destination-callout::after {
+				content: '';
+				position: absolute;
+				bottom: -5px;
+				left: 50%;
+				transform: translateX(-50%);
+				width: 0;
+				height: 0;
+				border-left: 5px solid transparent;
+				border-right: 5px solid transparent;
+				border-top: 5px solid var(--neon-cyan);
+				transition: border-top-color 0.2s ease;
+			}
+
+			.destination-callout.amber-border::after {
+				border-top-color: var(--neon-amber);
+			}
+
+			.callout-top {
+				display: flex;
+				align-items: center;
+				gap: 0.35rem;
+				color: var(--neon-cyan);
+				font-weight: 700;
+				font-size: clamp(0.6rem, 1vw, 0.68rem);
+			}
+
+			.callout-sub {
+				color: #94a3b8;
+				font-size: clamp(0.55rem, 0.9vw, 0.65rem);
+				letter-spacing: 0.04em;
+			}
+
+			.destination-callout:hover,
+			.destination-callout.hovered {
+				background: rgba(56, 189, 248, 0.25);
+				border-color: #7dd3fc;
+				box-shadow: 0 0 25px rgba(56, 189, 248, 0.75);
+				transform: translate(-50%, -108%) scale(1.05);
+			}
+
+			.destination-callout.amber-border:hover,
+			.destination-callout.amber-border.hovered {
+				background: rgba(245, 158, 11, 0.25);
+				border-color: #fde68a;
+				box-shadow: 0 0 25px rgba(245, 158, 11, 0.75);
+			}
+
+			.destination-callout:hover::after,
+			.destination-callout.hovered::after {
+				border-top-color: #7dd3fc;
+			}
+
+			.destination-callout.amber-border:hover::after,
+			.destination-callout.amber-border.hovered::after {
+				border-top-color: #fde68a;
+			}
+
+			.hud-container {
+				position: fixed;
+				inset: 0;
+				z-index: 20;
+				pointer-events: none;
+				padding: clamp(1rem, 2.5vw, 2.5rem);
+				display: flex;
+				flex-direction: column;
+				justify-content: space-between;
+				align-items: flex-start;
+			}
+
+			.telemetry-card {
+				pointer-events: auto;
+				background: linear-gradient(135deg, rgba(7, 12, 24, 0.92) 0%, rgba(15, 23, 42, 0.8) 100%);
+				border: 1px solid var(--hud-border);
+				border-left: 3px solid var(--neon-cyan);
+				border-radius: 8px;
+				padding: clamp(1rem, 1.8vw, 1.5rem) clamp(1.2rem, 2vw, 1.75rem);
+				backdrop-filter: blur(14px);
+				max-width: min(420px, 90vw);
+				box-shadow: 0 12px 40px rgba(0, 0, 0, 0.65), 0 0 20px rgba(56, 189, 248, 0.1);
+				animation: hudFloatSlow 6s ease-in-out infinite;
+				position: relative;
+				overflow: hidden;
+			}
+
+			.telemetry-card::before {
+				content: '';
+				position: absolute;
+				top: -50%;
+				left: -50%;
+				width: 200%;
+				height: 200%;
+				background: linear-gradient(
+					rgba(56, 189, 248, 0) 0%,
+					rgba(56, 189, 248, 0.03) 50%,
+					rgba(56, 189, 248, 0) 100%
+				);
+				transform: rotate(30deg);
+				animation: hudScanline 8s linear infinite;
+				pointer-events: none;
+			}
+
+			@keyframes hudFloatSlow {
+				0%, 100% { transform: translateY(0); }
+				50% { transform: translateY(-6px); }
+			}
+
+			@keyframes hudScanline {
+				0% { transform: translateY(-50%) rotate(30deg); }
+				100% { transform: translateY(50%) rotate(30deg); }
+			}
+
+			.telemetry-status {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				font-family: var(--font-mono);
+				font-size: 0.7rem;
+				letter-spacing: 0.1em;
+				color: var(--neon-cyan);
+				border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+				padding-bottom: 0.5rem;
+				margin-bottom: 0.8rem;
+			}
+
+			.telemetry-status .status-dot {
+				display: inline-block;
+				width: 7px;
+				height: 7px;
+				background: var(--neon-emerald);
+				border-radius: 50%;
+				box-shadow: 0 0 8px var(--neon-emerald);
+				margin-right: 0.4rem;
+				animation: pulseDot 2s infinite ease-in-out;
+			}
+
+			@keyframes pulseDot {
+				0%, 100% { opacity: 1; transform: scale(1); }
+				50% { opacity: 0.35; transform: scale(0.85); }
+			}
+
+			.telemetry-title {
+				font-family: var(--font-display);
+				font-size: clamp(1.25rem, 1.8vw, 1.75rem);
+				font-weight: 800;
+				color: #f8fafc;
+				line-height: 1.2;
+				margin-bottom: 0.4rem;
+			}
+
+			.telemetry-desc {
+				font-size: clamp(0.78rem, 1vw, 0.84rem);
+				color: #94a3b8;
+				line-height: 1.5;
+			}
+
+			.telemetry-hint {
+				display: inline-flex;
+				align-items: center;
+				gap: 0.4rem;
+				margin-top: 0.9rem;
+				padding: 0.25rem 0.55rem;
+				background: rgba(56, 189, 248, 0.06);
+				border: 1px solid rgba(56, 189, 248, 0.18);
+				border-radius: 4px;
+				font-family: var(--font-mono);
+				font-size: 0.65rem;
+				color: var(--neon-cyan);
+			}
+
+			.hud-nav-bar {
+				pointer-events: auto;
+				align-self: flex-start;
+				display: flex;
+				flex-wrap: wrap;
+				gap: 0.75rem;
+				background: var(--hud-bg);
+				border: 1px solid var(--hud-border);
+				border-radius: 6px;
+				padding: 0.55rem 0.9rem;
+				backdrop-filter: blur(12px);
+			}
+
+			.hud-nav-bar a {
+				font-family: var(--font-mono);
+				font-size: 0.72rem;
+				color: #94a3b8;
+				text-decoration: none;
+				letter-spacing: 0.06em;
+				transition: color 0.15s ease;
+			}
+
+			.hud-nav-bar a:hover {
+				color: var(--neon-cyan);
+			}
+
+			.nav-separator {
+				color: rgba(255, 255, 255, 0.15);
+			}
+
+			/* ==========================================
+			   2. MOBILE VERTICAL SINGLE-LINE DIAGRAM (<= 640px)
+			   ========================================== */
+			.mobile-sld-view {
+				display: none;
+				width: min(100%, 540px);
+				margin: 0 auto;
+				padding: 1.5rem 1.25rem 4rem;
+				flex: 1;
+			}
+
+			.mobile-hero-panel {
+				background: var(--hud-bg);
+				border: 1px solid var(--hud-border);
+				border-left: 3px solid var(--neon-cyan);
+				border-radius: 8px;
+				padding: 1.25rem 1.4rem;
+				backdrop-filter: blur(12px);
+				margin-bottom: 2rem;
+			}
+
+			.mobile-hero-title {
+				font-family: var(--font-display);
+				font-size: 1.35rem;
+				font-weight: 800;
+				color: #f8fafc;
+				margin-bottom: 0.35rem;
+			}
+
+			.mobile-hero-desc {
+				font-size: 0.82rem;
+				color: #cbd5e1;
+				line-height: 1.55;
+			}
+
+			.sld-bus-tree {
+				position: relative;
+				padding-left: 2rem;
+				display: flex;
+				flex-direction: column;
+				gap: 2rem;
+			}
+
+			.sld-bus-tree::before {
+				content: '';
+				position: absolute;
+				left: 9px;
+				top: 10px;
+				bottom: 20px;
+				width: 2px;
+				background: linear-gradient(
+					180deg,
+					var(--neon-cyan) 0%,
+					rgba(56, 189, 248, 0.4) 50%,
+					var(--neon-emerald) 100%
+				);
+				box-shadow: 0 0 8px rgba(56, 189, 248, 0.5);
+			}
+
+			.sld-station-branch {
+				position: relative;
+			}
+
+			.sld-station-branch::before {
+				content: '';
+				position: absolute;
+				left: -2rem;
+				top: 1.6rem;
+				width: 18px;
+				height: 2px;
+				background: var(--neon-cyan);
+				box-shadow: 0 0 6px rgba(56, 189, 248, 0.6);
+			}
+
+			.sld-station-branch::after {
+				content: '';
+				position: absolute;
+				left: calc(-2rem - 4px);
+				top: calc(1.6rem - 3px);
+				width: 8px;
+				height: 8px;
+				background: var(--neon-emerald);
+				border-radius: 50%;
+				box-shadow: 0 0 8px var(--neon-emerald);
+			}
+
+			.sld-station-card {
+				background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(7, 12, 24, 0.95) 100%);
+				border: 1px solid var(--hud-border);
+				border-radius: 8px;
+				padding: 1.25rem 1.4rem;
+				text-decoration: none;
+				color: inherit;
+				display: flex;
+				flex-direction: column;
+				backdrop-filter: blur(12px);
+				transition: border-color 0.2s ease, transform 0.2s ease;
+			}
+
+			.sld-station-card:hover,
+			.sld-station-card:active {
+				border-color: var(--neon-cyan);
+				transform: translateX(3px);
+			}
+
+			.sld-badge-row {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				font-family: var(--font-mono);
+				font-size: 0.68rem;
+				letter-spacing: 0.08em;
+				margin-bottom: 0.6rem;
+			}
+
+			.sld-badge-id {
+				color: var(--neon-emerald);
+				font-weight: 700;
+			}
+
+			.sld-badge-tag {
+				color: var(--neon-cyan);
+				font-size: 0.65rem;
+				padding: 0.15rem 0.45rem;
+				background: rgba(56, 189, 248, 0.08);
+				border: 1px solid rgba(56, 189, 248, 0.2);
+				border-radius: 3px;
+			}
+
+			.sld-title {
+				font-family: var(--font-display);
+				font-size: 1.15rem;
+				font-weight: 700;
+				color: #f8fafc;
+				line-height: 1.3;
+				margin-bottom: 0.35rem;
+			}
+
+			.sld-desc {
+				font-size: 0.82rem;
+				color: #cbd5e1;
+				line-height: 1.55;
+			}
+
+			.sld-footer-meta {
+				margin-top: 1rem;
+				padding-top: 0.65rem;
+				border-top: 1px solid rgba(255, 255, 255, 0.08);
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				font-family: var(--font-mono);
+				font-size: 0.7rem;
+				color: #94a3b8;
+			}
+
+			.sld-footer-meta span:last-child {
+				color: var(--neon-cyan);
+				font-weight: 600;
+			}
+
+			@media (max-width: 640px) {
+				#webgl-canvas,
+				#destination-markers-layer,
+				.hud-container {
+					display: none !important;
+				}
+				.mobile-sld-view {
+					display: block;
+				}
+				body {
+					user-select: text;
+				}
+			}
+
+			footer {
+				position: relative;
+				z-index: 20;
+			}
+		</style>
+	</head>
+	<body>
+		<!-- 1. 3D WEBGL TELEMETRY VIEWPORT (> 640px) -->
+		<canvas id="webgl-canvas"></canvas>
+
+		<div id="destination-markers-layer">
+			<a href="/about" class="destination-callout" id="callout-0" aria-label="Navigate to Station 01: Operations & Profile">
+				<div class="callout-top">
+					<span style="color: var(--neon-emerald)">01 //</span> OPERATIONS &amp; PROFILE
+				</div>
+				<div class="callout-sub">LV SWITCHGEAR // ASSET REGISTER</div>
+			</a>
+			<a href="/blog" class="destination-callout" id="callout-1" aria-label="Navigate to Station 02: Technical Audits & Field Logs">
+				<div class="callout-top">
+					<span style="color: var(--neon-emerald)">02 //</span> TECHNICAL AUDITS
+				</div>
+				<div class="callout-sub">CENTRIFUGAL CHILLER // ENERGY LOSS</div>
+			</a>
+			<a href="/research" class="destination-callout" id="callout-2" aria-label="Navigate to Station 03: Research Papers & Publications">
+				<div class="callout-top">
+					<span style="color: var(--neon-emerald)">03 //</span> RESEARCH &amp; PAPERS
+				</div>
+				<div class="callout-sub">THERMODYNAMIC MATRIX // TYPST</div>
+			</a>
+			<a href="/contact" class="destination-callout" id="callout-3" aria-label="Navigate to Station 04: Comms & Consultation Uplink">
+				<div class="callout-top">
+					<span style="color: var(--neon-emerald)">04 //</span> COMMS &amp; UPLINK
+				</div>
+				<div class="callout-sub">TELEMETRY MAST // CONSULTATION</div>
+			</a>
+			<a href="/calculator" class="destination-callout amber-border" id="callout-4" aria-label="Navigate to Station 05: CIBSE Guide M Plant Lifecycle Calculator">
+				<div class="callout-top">
+					<span style="color: var(--neon-amber)">05 //</span> CIBSE LIFECYCLE MODEL
+				</div>
+				<div class="callout-sub">CAPACITOR BANK // DEPRECIATION</div>
+			</a>
+		</div>
+
+		<div class="hud-container">
+			<div class="telemetry-card">
+				<div class="telemetry-status">
+					<div><span class="status-dot"></span>SCHEMATIC BUSBAR // ONLINE</div>
+					<div>LOC // LONDON &amp; SE</div>
+				</div>
+				<h1 class="telemetry-title">Nathan Jarvis, ACABE</h1>
+				<p class="telemetry-desc">
+					Building Services Consultant &amp; Engineering Researcher specialising in Mechanical &amp; Electrical condition appraisals, asset lifecycle depreciation, and empirical thermodynamic modelling.
+				</p>
+				<div class="telemetry-hint">
+					<span>[3D VIEW]</span> DRAG TO ORBIT • SCROLL TO ZOOM • CLICK PLANT TO ENTER
+				</div>
+			</div>
+
+			<nav class="hud-nav-bar" aria-label="Direct Substation Desktop Navigation">
+				<a href="/about" aria-label="Direct Link to Station 01 Profile">01 // PROFILE</a>
+				<span class="nav-separator">|</span>
+				<a href="/blog" aria-label="Direct Link to Station 02 Audits">02 // AUDITS</a>
+				<span class="nav-separator">|</span>
+				<a href="/research" aria-label="Direct Link to Station 03 Papers">03 // PAPERS</a>
+				<span class="nav-separator">|</span>
+				<a href="/contact" aria-label="Direct Link to Station 04 Comms">04 // COMMS</a>
+				<span class="nav-separator">|</span>
+				<a href="/calculator" style="color: var(--neon-amber);" aria-label="Direct Link to Station 05 Calculator">05 // CIBSE CALC</a>
+			</nav>
+		</div>
+
+		<!-- 2. MOBILE SINGLE-LINE DIAGRAM (<= 640px) -->
+		<main class="mobile-sld-view">
+			<header class="mobile-hero-panel">
+				<div class="telemetry-status">
+					<div><span class="status-dot"></span>SCHEMATIC BUS // ACTIVE</div>
+					<div>400V 3Φ 50Hz</div>
+				</div>
+				<h1 class="mobile-hero-title">Nathan Jarvis, ACABE</h1>
+				<p class="mobile-hero-desc">
+					Building Services Consultant specialising in M&amp;E condition surveys, plant lifecycle modelling, statutory compliance, and empirical engineering research.
+				</p>
+			</header>
+
+			<div class="sld-bus-tree">
+				<div class="sld-station-branch">
+					<a href="/about" class="sld-station-card" aria-label="Open Station 01 Operations and Professional Profile">
+						<div class="sld-badge-row">
+							<span class="sld-badge-id">01 // OPERATIONS</span>
+							<span class="sld-badge-tag">LV SWITCHBOARD</span>
+						</div>
+						<h2 class="sld-title">Operations &amp; Professional Profile</h2>
+						<p class="sld-desc">CABE professional accreditation, M&amp;E condition survey scope, technical toolset, and estate asset management frameworks.</p>
+						<div class="sld-footer-meta">
+							<span>DISCIPLINE // M&amp;E</span>
+							<span>INITIALISE TELEMETRY →</span>
+						</div>
+					</a>
+				</div>
+
+				<div class="sld-station-branch">
+					<a href="/blog" class="sld-station-card" aria-label="Open Station 02 Technical Audits and Field Logs">
+						<div class="sld-badge-row">
+							<span class="sld-badge-id">02 // FIELD AUDITS</span>
+							<span class="sld-badge-tag">CENTRIFUGAL CHILLER</span>
+						</div>
+						<h2 class="sld-title">Engineering Audits &amp; Field Deep Dives</h2>
+						<p class="sld-desc">Active circuit power dissipation measurements, fluorescent phase-outs, and empirical plant depreciation analyses.</p>
+						<div class="sld-footer-meta">
+							<span>LOGS // 12 ARCHIVED</span>
+							<span>INITIALISE TELEMETRY →</span>
+						</div>
+					</a>
+				</div>
+
+				<div class="sld-station-branch">
+					<a href="/research" class="sld-station-card" aria-label="Open Station 03 Academic Preprints and Research Papers">
+						<div class="sld-badge-row">
+							<span class="sld-badge-id">03 // RESEARCH</span>
+							<span class="sld-badge-tag">THERMAL MATRIX</span>
+						</div>
+						<h2 class="sld-title">Academic Preprints &amp; Typst Publications</h2>
+						<p class="sld-desc">Peer-reviewed preprints and Typst typeset technical reports with mathematically verified loss and contact mechanics models.</p>
+						<div class="sld-footer-meta">
+							<span>FORMAT // TYPST / PDF</span>
+							<span>INITIALISE TELEMETRY →</span>
+						</div>
+					</a>
+				</div>
+
+				<div class="sld-station-branch">
+					<a href="/contact" class="sld-station-card" aria-label="Open Station 04 Consultation and Enquiries Uplink">
+						<div class="sld-badge-row">
+							<span class="sld-badge-id">04 // COMMS</span>
+							<span class="sld-badge-tag">TRANSCEIVER MAST</span>
+						</div>
+						<h2 class="sld-title">Consultation Uplink &amp; Enquiries</h2>
+						<p class="sld-desc">Direct endpoint to commission M&amp;E condition surveys, statutory compliance audits (UK RoHS / Part L), or discuss research briefs.</p>
+						<div class="sld-footer-meta">
+							<span>LINE // DISPATCH OPEN</span>
+							<span>INITIALISE TELEMETRY →</span>
+						</div>
+					</a>
+				</div>
+
+				<div class="sld-station-branch">
+					<a href="/calculator" class="sld-station-card" aria-label="Open Station 05 CIBSE Guide M Plant Lifecycle Modeler">
+						<div class="sld-badge-row">
+							<span class="sld-badge-id" style="color: var(--neon-amber);">05 // CALCULATOR</span>
+							<span class="sld-badge-tag" style="border-color: rgba(245,158,11,0.4); color: var(--neon-amber);">CIBSE GUIDE M</span>
+						</div>
+						<h2 class="sld-title">Plant Lifecycle &amp; Depreciation Modeler</h2>
+						<p class="sld-desc">Interactive CIBSE Guide M Table 13.1 calculator assessing remaining useful life, maintenance deratings, and forward Capex.</p>
+						<div class="sld-footer-meta">
+							<span>TOOL // CLIENT-SIDE</span>
+							<span style="color: var(--neon-amber);">INITIALISE CALCULATOR →</span>
+						</div>
+					</a>
+				</div>
+			</div>
+		</main>
+
+		<Footer />
+
+		<!-- 3. ZERO-PAYLOAD DESKTOP/TABLET SCRIPT -->
+		<script>
+			if (window.matchMedia('(min-width: 641px)').matches) {
+				const loadTelemetryEngine = async () => {
+					const { init3DGrid } = await import('../scripts/telemetry3d.js');
+					init3DGrid();
+				};
+				if (document.readyState === 'loading') {
+					window.addEventListener('DOMContentLoaded', loadTelemetryEngine);
+				} else {
+					loadTelemetryEngine();
+				}
+			}
+		</script>
+	</body>
+</html>
