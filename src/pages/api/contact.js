@@ -10,21 +10,21 @@ export const POST = async ({ request, redirect }) => {
 
   // 2. Set up the email server using your Vercel Environment Variables
   const transporter = nodemailer.createTransport({
-  host: 'smtp.zoho.eu', // Zoho's European server
-  port: 465,
-  secure: true,
-  auth: {
-    user: import.meta.env.EMAIL_USER,
-    pass: import.meta.env.EMAIL_PASS,
-  },
-});
+    host: 'smtp.zoho.com', // Let's try the global server just in case
+    port: 465,
+    secure: true,
+    auth: {
+      user: import.meta.env.EMAIL_USER,
+      pass: import.meta.env.EMAIL_PASS,
+    },
+  });
 
   try {
     // 3. Send the email to yourself
     await transporter.sendMail({
-      from: import.meta.env.EMAIL_USER,
-      to: import.meta.env.EMAIL_USER, // Sends it to your inbox
-      replyTo: email, // So you can just click "Reply" to the sender
+      from: `"Portfolio Contact" <${import.meta.env.EMAIL_USER}>`,
+      to: import.meta.env.EMAIL_USER, 
+      replyTo: email, 
       subject: `Portfolio Brief: ${scope} - ${name}`,
       text: `Name: ${name}\nEmail: ${email}\nScope: ${scope}\n\nMessage:\n${message}`,
     });
@@ -32,7 +32,6 @@ export const POST = async ({ request, redirect }) => {
     // 4. Redirect back to the contact page after sending
     return redirect('/contact?status=success');
   } catch (error) {
-    console.error(error);
+    console.error("Mail error:", error);
     return redirect('/contact?status=error');
   }
-}
