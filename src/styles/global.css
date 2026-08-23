@@ -73,11 +73,11 @@ a {
   color: #cbd5e1;
 }
 
-.article-body :global(tr:last-child td) {
+:global(.article-body tr:last-child td) {
   border-bottom: none;
 }
 
-.article-body :global(tr:hover) {
+:global(.article-body tr:hover) {
   background: rgba(56, 189, 248, 0.03);
 }
 
