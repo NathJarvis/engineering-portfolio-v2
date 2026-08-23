@@ -1,6 +1,7 @@
 ---
 import '../../styles/global.css';
 import Footer from '../../components/Footer.astro';
+import Analytics from '@vercel/analytics/astro';
 import { getCollection } from 'astro:content';
 
 const posts = await getCollection('blog');
@@ -19,6 +20,7 @@ const sortedPosts = posts.sort(
 			content="Station 02 Technical Audits & Field Logs - Empirical engineering investigations into active circuit dissipation, fluorescent phase-outs, and HVAC degradation by Nathan Jarvis, ACABE."
 		/>
 		<title>Station 02 // Field Audits &amp; Technical Logs - Nathan Jarvis, ACABE</title>
+		<Analytics />
 		<style>
 			:root {
 				--neon-cyan: #38bdf8;

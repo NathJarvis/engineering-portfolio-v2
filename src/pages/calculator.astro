@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import Footer from '../components/Footer.astro';
+import Analytics from '@vercel/analytics/astro';
 import { CIBSE_GUIDE_M_DATA } from '../data/cibseGuideMData';
 ---
 
@@ -14,6 +15,7 @@ import { CIBSE_GUIDE_M_DATA } from '../data/cibseGuideMData';
             content="Interactive CIBSE Guide M / RICS NRM3 Asset Lifecycle & Forward Replacement Calculator by Nathan Jarvis, ACABE. Models component degradation, maintenance factors, and inflation escalation."
         />
         <title>Station 05 // Plant Lifecycle Modeler (CIBSE Guide M) - Nathan Jarvis, ACABE</title>
+        <Analytics />
         <style>
             :root {
                 --neon-cyan: #38bdf8;
