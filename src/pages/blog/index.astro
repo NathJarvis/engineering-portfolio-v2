@@ -5,322 +5,336 @@ import { getCollection } from 'astro:content';
 
 const posts = await getCollection('blog');
 const sortedPosts = posts.sort(
-	(a, b) => new Date(b.data.publishDate).valueOf() - new Date(a.data.publishDate).valueOf()
+    (a, b) => new Date(b.data.publishDate).valueOf() - new Date(a.data.publishDate).valueOf()
 );
 ---
 
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<meta
-			name="description"
-			content="Station 02 Technical Audits & Field Logs - Empirical engineering investigations into active circuit dissipation, fluorescent phase-outs, and HVAC degradation by Nathan Jarvis, ACABE."
-		/>
-		<title>Station 02 // Field Audits &amp; Technical Logs - Nathan Jarvis, ACABE</title>
-		<style>
-			:root {
-				--neon-cyan: #38bdf8;
-				--neon-blue: #60a5fa;
-				--neon-emerald: #34d399;
-				--neon-amber: #f59e0b;
-				--hud-bg: rgba(7, 12, 24, 0.88);
-				--hud-border: rgba(56, 189, 248, 0.25);
-				--font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-				--font-display: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-			}
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="description"
+            content="Technical Case Studies & Engineering Logs - Practical investigations into MEP asset condition, electrical distribution losses, and statutory compliance by Nathan Jarvis, ACABE."
+        />
+        <title>Station 02 // Technical Case Studies & Field Logs - Nathan Jarvis, ACABE</title>
+        <style>
+            :root {
+                --neon-cyan: #38bdf8;
+                --neon-blue: #60a5fa;
+                --neon-emerald: #34d399;
+                --neon-amber: #f59e0b;
+                --hud-bg: rgba(7, 12, 24, 0.88);
+                --hud-border: rgba(56, 189, 248, 0.25);
+                --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+                --font-display: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            }
 
-			* {
-				box-sizing: border-box;
-				margin: 0;
-				padding: 0;
-			}
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
 
-			body {
-				background: #030712;
-				min-height: 100vh;
-				display: flex;
-				flex-direction: column;
-				user-select: text;
-			}
+            body {
+                background: #030712;
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                user-select: text;
+                overflow-x: hidden;
+            }
 
-			.responsive-shell {
-				width: min(1440px, 95vw);
-				margin: 0 auto;
-				padding: clamp(1.5rem, 2.5vw, 3rem) 0 4rem;
-				flex: 1;
-			}
+            .responsive-shell {
+                width: min(1440px, 95vw);
+                margin: 0 auto;
+                padding: clamp(1.5rem, 2.5vw, 3rem) 0 4rem;
+                flex: 1;
+            }
 
-			.back-btn {
-				display: inline-flex;
-				align-items: center;
-				gap: 0.5rem;
-				font-size: 0.85rem;
-				color: var(--neon-cyan);
-				margin-bottom: 2.5rem;
-				padding: 0.5rem 1rem;
-				background: rgba(56, 189, 248, 0.08);
-				border: 1px solid var(--hud-border);
-				border-radius: 4px;
-				transition: background 0.15s ease, border-color 0.15s ease;
-				text-decoration: none;
-				font-family: var(--font-mono);
-			}
+            .back-btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                font-size: 0.85rem;
+                color: var(--neon-cyan);
+                margin-bottom: 2.5rem;
+                padding: 0.5rem 1rem;
+                background: rgba(56, 189, 248, 0.08);
+                border: 1px solid var(--hud-border);
+                border-radius: 4px;
+                transition: background 0.15s ease, border-color 0.15s ease;
+                text-decoration: none;
+                font-family: var(--font-mono);
+            }
 
-			.back-btn:hover {
-				background: rgba(56, 189, 248, 0.18);
-				border-color: #7dd3fc;
-			}
+            .back-btn:hover {
+                background: rgba(56, 189, 248, 0.18);
+                border-color: #7dd3fc;
+            }
 
-			.station-grid {
-				display: grid;
-				grid-template-columns: minmax(280px, 340px) minmax(0, 1fr);
-				gap: clamp(2rem, 3.5vw, 4rem);
-				align-items: start;
-			}
+            .station-grid {
+                display: grid;
+                grid-template-columns: minmax(280px, 340px) minmax(0, 1fr);
+                gap: clamp(2rem, 3.5vw, 4rem);
+                align-items: start;
+            }
 
-			.hud-sidebar {
-				position: sticky;
-				top: 2rem;
-				background: var(--hud-bg);
-				border: 1px solid var(--hud-border);
-				border-radius: 8px;
-				padding: 1.75rem;
-				backdrop-filter: blur(12px);
-			}
+            /* Sidebar */
+            .hud-sidebar {
+                position: sticky;
+                top: 2rem;
+                background: var(--hud-bg);
+                border: 1px solid var(--hud-border);
+                border-radius: 8px;
+                padding: 1.75rem;
+                backdrop-filter: blur(12px);
+                min-width: 0;
+            }
 
-			.sidebar-header {
-				font-size: 0.75rem;
-				color: var(--neon-cyan);
-				letter-spacing: 0.12em;
-				margin-bottom: 1.25rem;
-				border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-				padding-bottom: 0.6rem;
-				font-family: var(--font-mono);
-			}
+            .sidebar-header {
+                font-size: 0.75rem;
+                color: var(--neon-cyan);
+                letter-spacing: 0.12em;
+                margin-bottom: 1.25rem;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+                padding-bottom: 0.6rem;
+                font-family: var(--font-mono);
+            }
 
-			.meta-row {
-				margin-bottom: 1.25rem;
-			}
+            .meta-row {
+                margin-bottom: 1.25rem;
+            }
 
-			.meta-label {
-				font-size: 0.72rem;
-				color: #94a3b8;
-				text-transform: uppercase;
-				letter-spacing: 0.08em;
-				margin-bottom: 0.25rem;
-				font-family: var(--font-mono);
-			}
+            .meta-label {
+                font-size: 0.72rem;
+                color: #94a3b8;
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+                margin-bottom: 0.25rem;
+                font-family: var(--font-mono);
+            }
 
-			.meta-val {
-				font-size: 0.88rem;
-				color: #f8fafc;
-				line-height: 1.45;
-			}
+            .meta-val {
+                font-size: 0.88rem;
+                color: #f8fafc;
+                line-height: 1.45;
+            }
 
-			.status-pill {
-				display: inline-block;
-				background: rgba(52, 211, 153, 0.15);
-				border: 1px solid rgba(52, 211, 153, 0.5);
-				color: #34d399;
-				padding: 0.25rem 0.6rem;
-				border-radius: 4px;
-				font-size: 0.75rem;
-				font-family: var(--font-mono);
-			}
+            .status-pill {
+                display: inline-block;
+                background: rgba(52, 211, 153, 0.15);
+                border: 1px solid rgba(52, 211, 153, 0.5);
+                color: #34d399;
+                padding: 0.25rem 0.6rem;
+                border-radius: 4px;
+                font-size: 0.75rem;
+                font-family: var(--font-mono);
+            }
 
-			.main-stream {
-				background: rgba(7, 12, 24, 0.75);
-				border: 1px solid var(--hud-border);
-				border-radius: 8px;
-				padding: clamp(2rem, 4vw, 4rem);
-				min-width: 0;
-			}
+            /* Main Content Stream */
+            .main-stream {
+                background: rgba(7, 12, 24, 0.75);
+                border: 1px solid var(--hud-border);
+                border-radius: 8px;
+                padding: clamp(1.75rem, 3.5vw, 3.5rem);
+                min-width: 0;
+            }
 
-			.page-tag {
-				font-size: 0.8rem;
-				color: var(--neon-blue);
-				letter-spacing: 0.1em;
-				margin-bottom: 0.5rem;
-				font-family: var(--font-mono);
-			}
+            .page-tag {
+                font-size: 0.8rem;
+                color: var(--neon-blue);
+                letter-spacing: 0.1em;
+                margin-bottom: 0.5rem;
+                font-family: var(--font-mono);
+            }
 
-			.page-title {
-				font-family: var(--font-display);
-				font-size: clamp(2rem, 3.2vw, 3.2rem);
-				line-height: 1.25;
-				color: #f8fafc;
-				margin-bottom: 1.75rem;
-			}
+            .page-title {
+                font-family: var(--font-display);
+                font-size: clamp(2rem, 3.2vw, 3.2rem);
+                line-height: 1.25;
+                color: #f8fafc;
+                margin-bottom: 1.75rem;
+            }
 
-			.page-lead {
-				font-size: clamp(1rem, 1.25vw, 1.2rem);
-				color: #e2e8f0;
-				line-height: 1.85;
-				border-left: 4px solid var(--neon-cyan);
-				background: rgba(56, 189, 248, 0.05);
-				padding: 1.5rem 1.75rem;
-				border-radius: 0 8px 8px 0;
-				margin-bottom: 3rem;
-			}
+            .page-lead {
+                font-size: clamp(1rem, 1.25vw, 1.15rem);
+                color: #e2e8f0;
+                line-height: 1.85;
+                border-left: 4px solid var(--neon-cyan);
+                background: rgba(56, 189, 248, 0.05);
+                padding: 1.5rem 1.75rem;
+                border-radius: 0 8px 8px 0;
+                margin-bottom: 3rem;
+            }
 
-			.articles-stack {
-				display: flex;
-				flex-direction: column;
-				gap: 2rem;
-			}
+            .articles-stack {
+                display: flex;
+                flex-direction: column;
+                gap: 1.75rem;
+            }
 
-			.article-card {
-				background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(7, 12, 24, 0.95) 100%);
-				border: 1px solid var(--hud-border);
-				border-radius: 8px;
-				padding: clamp(1.5rem, 2.5vw, 2.25rem);
-				text-decoration: none;
-				color: inherit;
-				display: flex;
-				flex-direction: column;
-				justify-content: space-between;
-				transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-			}
+            .article-card {
+                background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(7, 12, 24, 0.95) 100%);
+                border: 1px solid var(--hud-border);
+                border-radius: 8px;
+                padding: clamp(1.5rem, 2.5vw, 2.25rem);
+                text-decoration: none;
+                color: inherit;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+                min-width: 0;
+            }
 
-			.article-card:hover {
-				border-color: var(--neon-cyan);
-				transform: translateY(-2px);
-				box-shadow: 0 8px 24px rgba(56, 189, 248, 0.15);
-			}
+            .article-card:hover {
+                border-color: var(--neon-cyan);
+                transform: translateY(-2px);
+                box-shadow: 0 8px 24px rgba(56, 189, 248, 0.15);
+            }
 
-			.article-meta-line {
-				display: flex;
-				justify-content: space-between;
-				align-items: center;
-				font-family: var(--font-mono);
-				font-size: 0.72rem;
-				color: #94a3b8;
-				margin-bottom: 0.85rem;
-			}
+            .article-meta-line {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                font-family: var(--font-mono);
+                font-size: 0.72rem;
+                color: #94a3b8;
+                margin-bottom: 0.85rem;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
 
-			.article-category {
-				color: var(--neon-cyan);
-				background: rgba(56, 189, 248, 0.1);
-				border: 1px solid rgba(56, 189, 248, 0.3);
-				padding: 0.15rem 0.5rem;
-				border-radius: 4px;
-				letter-spacing: 0.06em;
-			}
+            .article-category {
+                color: var(--neon-cyan);
+                background: rgba(56, 189, 248, 0.1);
+                border: 1px solid rgba(56, 189, 248, 0.3);
+                padding: 0.15rem 0.5rem;
+                border-radius: 4px;
+                letter-spacing: 0.06em;
+            }
 
-			.article-heading {
-				font-family: var(--font-display);
-				font-size: clamp(1.25rem, 1.8vw, 1.6rem);
-				font-weight: 700;
-				color: #f8fafc;
-				line-height: 1.35;
-				margin-bottom: 0.75rem;
-			}
+            .article-heading {
+                font-family: var(--font-display);
+                font-size: clamp(1.25rem, 1.8vw, 1.55rem);
+                font-weight: 700;
+                color: #f8fafc;
+                line-height: 1.35;
+                margin-bottom: 0.75rem;
+            }
 
-			.article-desc {
-				font-size: clamp(0.9rem, 1.1vw, 0.98rem);
-				color: #cbd5e1;
-				line-height: 1.7;
-				margin-bottom: 1.5rem;
-			}
+            .article-desc {
+                font-size: clamp(0.88rem, 1.05vw, 0.96rem);
+                color: #cbd5e1;
+                line-height: 1.7;
+                margin-bottom: 1.5rem;
+            }
 
-			.article-footer-cta {
-				display: flex;
-				justify-content: space-between;
-				align-items: center;
-				padding-top: 1rem;
-				border-top: 1px solid rgba(255, 255, 255, 0.1);
-				font-family: var(--font-mono);
-				font-size: 0.75rem;
-				color: var(--neon-cyan);
-				font-weight: 600;
-			}
+            .article-footer-cta {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding-top: 1rem;
+                border-top: 1px solid rgba(255, 255, 255, 0.08);
+                font-family: var(--font-mono);
+                font-size: 0.75rem;
+                color: var(--neon-cyan);
+                font-weight: 600;
+            }
 
-			@media (max-width: 1024px) {
-				.station-grid {
-					grid-template-columns: 1fr;
-					gap: 2rem;
-				}
-				.hud-sidebar {
-					position: static;
-				}
-			}
-		</style>
-	</head>
-	<body>
-		<main class="responsive-shell">
-			<a href="/" class="back-btn" aria-label="Return to Command Telemetry Grid Home">
-				← RETURN TO COMMAND GRID
-			</a>
+            @media (max-width: 1024px) {
+                .station-grid {
+                    grid-template-columns: minmax(0, 1fr);
+                    gap: 2rem;
+                }
+                .hud-sidebar {
+                    position: static;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <main class="responsive-shell">
+            <a href="/" class="back-btn" aria-label="Return to Homepage">
+                ← RETURN TO PORTFOLIO HOME
+            </a>
 
-			<div class="station-grid">
-				<aside class="hud-sidebar" aria-label="Field Audit Logs Telemetry">
-					<div class="sidebar-header">AUDIT LOG METRICS</div>
+            <div class="station-grid">
+                <!-- Sidebar Summary -->
+                <aside class="hud-sidebar" aria-label="Technical Logs Overview">
+                    <div class="sidebar-header">REPOSITORY OVERVIEW</div>
 
-					<div class="meta-row">
-						<div class="meta-label">REPOSITORY</div>
-						<div class="meta-val">Field Engineering Logs</div>
-					</div>
+                    <div class="meta-row">
+                        <div class="meta-label">DISCIPLINE</div>
+                        <div class="meta-val">Building Services &amp; M&amp;E Engineering</div>
+                    </div>
 
-					<div class="meta-row">
-						<div class="meta-label">PRIMARY SCOPE</div>
-						<div class="meta-val" style="color: var(--neon-cyan);">Parasitic Loss &amp; Plant Degradation</div>
-					</div>
+                    <div class="meta-row">
+                        <div class="meta-label">PRIMARY SCOPE</div>
+                        <div class="meta-val" style="color: var(--neon-cyan);">Plant Degradation &amp; Distribution Losses</div>
+                    </div>
 
-					<div class="meta-row">
-						<div class="meta-label">LOGS COMPILED</div>
-						<div class="meta-val">{sortedPosts.length} Technical Dossiers</div>
-					</div>
+                    <div class="meta-row">
+                        <div class="meta-label">ARTICLES COMPILED</div>
+                        <div class="meta-val">{sortedPosts.length} Case Studies</div>
+                    </div>
 
-					<div class="meta-row">
-						<div class="meta-label">STATUS</div>
-						<div class="meta-val"><span class="status-pill">OPEN ACCESS // UNRESTRICTED</span></div>
-					</div>
-				</aside>
+                    <div class="meta-row">
+                        <div class="meta-label">BENCHMARK STANDARDS</div>
+                        <div class="meta-val">CIBSE Guide M • BS 7671 • SFG20</div>
+                    </div>
 
-				<section class="main-stream">
-					<div class="page-tag">STATION // 02</div>
-					<h1 class="page-title">Technical Deep Dives &amp; Engineering Logs</h1>
-					<p class="page-lead">
-						Empirical field investigations, parasitic active circuit dissipation measurements, statutory phase-out economics (UK RoHS / Ecodesign), and HVAC degradation analyses.
-					</p>
+                    <div class="meta-row">
+                        <div class="meta-label">STATUS</div>
+                        <div class="meta-val"><span class="status-pill">PUBLISHED CASE STUDIES</span></div>
+                    </div>
+                </aside>
 
-					<div class="articles-stack">
-						{
-							sortedPosts.map((post) => (
-								<a
-									href={`/blog/${post.id}`}
-									class="article-card"
-									aria-label={`Read engineering audit dossier: ${post.data.title}`}
-								>
-									<div>
-										<div class="article-meta-line">
-											<span class="article-category">
-												{post.data.category || post.data.tag || 'M&E AUDIT'}
-											</span>
-											<time datetime={new Date(post.data.publishDate).toISOString()}>
-												{new Date(post.data.publishDate).toLocaleDateString('en-GB', {
-													year: 'numeric',
-													month: 'short',
-													day: 'numeric',
-												})}
-											</time>
-										</div>
-										<h2 class="article-heading">{post.data.title}</h2>
-										<p class="article-desc">{post.data.description}</p>
-									</div>
-									<div class="article-footer-cta">
-										<span>DOSSIER // ACCESS RECORD</span>
-										<span>READ ANALYSIS →</span>
-									</div>
-								</a>
-							))
-						}
-					</div>
-				</section>
-			</div>
-		</main>
-		<Footer />
-	</body>
+                <!-- Main Content Stream -->
+                <section class="main-stream">
+                    <div class="page-tag">STATION // 02</div>
+                    <h1 class="page-title">Technical Case Studies &amp; Field Logs</h1>
+                    <p class="page-lead">
+                        Field investigations, distribution power loss assessments, statutory compliance transitions (UK RoHS / Part L), and HVAC plant degradation analyses grounded in empirical building services engineering.
+                    </p>
+
+                    <div class="articles-stack">
+                        {
+                            sortedPosts.map((post) => (
+                                <a
+                                    href={`/blog/${post.id}`}
+                                    class="article-card"
+                                    aria-label={`Read engineering case study: ${post.data.title}`}
+                                >
+                                    <div>
+                                        <div class="article-meta-line">
+                                            <span class="article-category">
+                                                {post.data.category || post.data.tag || 'M&E AUDIT'}
+                                            </span>
+                                            <time datetime={new Date(post.data.publishDate).toISOString()}>
+                                                {new Date(post.data.publishDate).toLocaleDateString('en-GB', {
+                                                    year: 'numeric',
+                                                    month: 'short',
+                                                    day: 'numeric',
+                                                })}
+                                            </time>
+                                        </div>
+                                        <h2 class="article-heading">{post.data.title}</h2>
+                                        <p class="article-desc">{post.data.description}</p>
+                                    </div>
+                                    <div class="article-footer-cta">
+                                        <span>FIELD CASE STUDY</span>
+                                        <span>READ TECHNICAL AUDIT →</span>
+                                    </div>
+                                </a>
+                            ))
+                        }
+                    </div>
+                </section>
+            </div>
+        </main>
+        <Footer />
+    </body>
 </html>

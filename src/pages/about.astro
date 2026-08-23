@@ -5,360 +5,521 @@ import Footer from '../components/Footer.astro';
 
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<meta
-			name="description"
-			content="Station 01 Operations & Profile - Nathan Jarvis, ACABE. Associate Member of the Chartered Association of Building Engineers specialising in M&E condition surveys, plant lifecycle asset management, and building compliance."
-		/>
-		<title>Station 01 // Operations &amp; Profile - Nathan Jarvis, ACABE</title>
-		<style>
-			:root {
-				--neon-cyan: #38bdf8;
-				--neon-blue: #60a5fa;
-				--neon-emerald: #34d399;
-				--neon-amber: #f59e0b;
-				--hud-bg: rgba(7, 12, 24, 0.88);
-				--hud-border: rgba(56, 189, 248, 0.25);
-				--font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-				--font-display: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-			}
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="description"
+            content="Nathan Jarvis, ACABE - Building Services & Asset Management Consultant at Troup Bywaters + Anders. Specialising in M&E condition surveys, CIBSE Guide M lifecycle modeling, and statutory compliance."
+        />
+        <title>Professional Profile // Nathan Jarvis, ACABE - Building Services Consultant</title>
+        <style>
+            :root {
+                --neon-cyan: #38bdf8;
+                --neon-blue: #60a5fa;
+                --neon-emerald: #34d399;
+                --neon-amber: #f59e0b;
+                --hud-bg: rgba(7, 12, 24, 0.88);
+                --hud-border: rgba(56, 189, 248, 0.25);
+                --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+                --font-display: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            }
 
-			* {
-				box-sizing: border-box;
-				margin: 0;
-				padding: 0;
-			}
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
 
-			body {
-				background: #030712;
-				min-height: 100vh;
-				display: flex;
-				flex-direction: column;
-				user-select: text;
-			}
+            body {
+                background: #030712;
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+                user-select: text;
+                overflow-x: hidden;
+            }
 
-			.responsive-shell {
-				width: min(1440px, 95vw);
-				margin: 0 auto;
-				padding: clamp(1.5rem, 2.5vw, 3rem) 0 4rem;
-				flex: 1;
-			}
+            .responsive-shell {
+                width: min(1440px, 95vw);
+                margin: 0 auto;
+                padding: clamp(1.5rem, 2.5vw, 3rem) 0 4rem;
+                flex: 1;
+            }
 
-			.back-btn {
-				display: inline-flex;
-				align-items: center;
-				gap: 0.5rem;
-				font-size: 0.85rem;
-				color: var(--neon-cyan);
-				margin-bottom: 2.5rem;
-				padding: 0.5rem 1rem;
-				background: rgba(56, 189, 248, 0.08);
-				border: 1px solid var(--hud-border);
-				border-radius: 4px;
-				transition: background 0.15s ease, border-color 0.15s ease;
-				text-decoration: none;
-				font-family: var(--font-mono);
-			}
+            .back-btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                font-size: 0.85rem;
+                color: var(--neon-cyan);
+                margin-bottom: 2.5rem;
+                padding: 0.5rem 1rem;
+                background: rgba(56, 189, 248, 0.08);
+                border: 1px solid var(--hud-border);
+                border-radius: 4px;
+                transition: background 0.15s ease, border-color 0.15s ease;
+                text-decoration: none;
+                font-family: var(--font-mono);
+            }
 
-			.back-btn:hover {
-				background: rgba(56, 189, 248, 0.18);
-				border-color: #7dd3fc;
-			}
+            .back-btn:hover {
+                background: rgba(56, 189, 248, 0.18);
+                border-color: #7dd3fc;
+            }
 
-			.station-grid {
-				display: grid;
-				grid-template-columns: minmax(280px, 340px) minmax(0, 1fr);
-				gap: clamp(2rem, 3.5vw, 4rem);
-				align-items: start;
-			}
+            .station-grid {
+                display: grid;
+                grid-template-columns: minmax(280px, 340px) minmax(0, 1fr);
+                gap: clamp(2rem, 3.5vw, 4rem);
+                align-items: start;
+            }
 
-			/* Practice / Personnel Telemetry Sidebar */
-			.hud-sidebar {
-				position: sticky;
-				top: 2rem;
-				background: var(--hud-bg);
-				border: 1px solid var(--hud-border);
-				border-radius: 8px;
-				padding: 1.75rem;
-				backdrop-filter: blur(12px);
-			}
+            /* Profile Sidebar */
+            .hud-sidebar {
+                position: sticky;
+                top: 2rem;
+                background: var(--hud-bg);
+                border: 1px solid var(--hud-border);
+                border-radius: 8px;
+                padding: 1.75rem;
+                backdrop-filter: blur(12px);
+                min-width: 0;
+            }
 
-			.sidebar-header {
-				font-size: 0.75rem;
-				color: var(--neon-cyan);
-				letter-spacing: 0.12em;
-				margin-bottom: 1.25rem;
-				border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-				padding-bottom: 0.6rem;
-				font-family: var(--font-mono);
-			}
+            .sidebar-header {
+                font-size: 0.75rem;
+                color: var(--neon-cyan);
+                letter-spacing: 0.12em;
+                margin-bottom: 1.25rem;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+                padding-bottom: 0.6rem;
+                font-family: var(--font-mono);
+            }
 
-			.meta-row {
-				margin-bottom: 1.25rem;
-			}
+            .meta-row {
+                margin-bottom: 1.25rem;
+            }
 
-			.meta-label {
-				font-size: 0.72rem;
-				color: #94a3b8;
-				text-transform: uppercase;
-				letter-spacing: 0.08em;
-				margin-bottom: 0.25rem;
-				font-family: var(--font-mono);
-			}
+            .meta-label {
+                font-size: 0.72rem;
+                color: #94a3b8;
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+                margin-bottom: 0.25rem;
+                font-family: var(--font-mono);
+            }
 
-			.meta-val {
-				font-size: 0.88rem;
-				color: #f8fafc;
-				line-height: 1.45;
-			}
+            .meta-val {
+                font-size: 0.88rem;
+                color: #f8fafc;
+                line-height: 1.45;
+            }
 
-			.status-pill {
-				display: inline-block;
-				background: rgba(52, 211, 153, 0.15);
-				border: 1px solid rgba(52, 211, 153, 0.5);
-				color: #34d399;
-				padding: 0.25rem 0.6rem;
-				border-radius: 4px;
-				font-size: 0.75rem;
-				font-family: var(--font-mono);
-			}
+            .status-pill {
+                display: inline-block;
+                background: rgba(52, 211, 153, 0.15);
+                border: 1px solid rgba(52, 211, 153, 0.5);
+                color: #34d399;
+                padding: 0.25rem 0.6rem;
+                border-radius: 4px;
+                font-size: 0.75rem;
+                font-family: var(--font-mono);
+            }
 
-			.tech-stack-list {
-				display: flex;
-				flex-wrap: wrap;
-				gap: 0.4rem;
-				margin-top: 0.5rem;
-			}
+            .tech-stack-list {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.4rem;
+                margin-top: 0.5rem;
+            }
 
-			.tech-badge {
-				background: rgba(56, 189, 248, 0.1);
-				border: 1px solid rgba(56, 189, 248, 0.3);
-				color: #cbd5e1;
-				font-size: 0.72rem;
-				padding: 0.2rem 0.45rem;
-				border-radius: 3px;
-				font-family: var(--font-mono);
-			}
+            .tech-badge {
+                background: rgba(56, 189, 248, 0.08);
+                border: 1px solid rgba(56, 189, 248, 0.25);
+                color: #cbd5e1;
+                font-size: 0.72rem;
+                padding: 0.2rem 0.5rem;
+                border-radius: 3px;
+                font-family: var(--font-mono);
+            }
 
-			/* Main Content Body */
-			.main-stream {
-				background: rgba(7, 12, 24, 0.75);
-				border: 1px solid var(--hud-border);
-				border-radius: 8px;
-				padding: clamp(2rem, 4vw, 4rem);
-				min-width: 0;
-			}
+            /* Main Content Stream */
+            .main-stream {
+                background: rgba(7, 12, 24, 0.75);
+                border: 1px solid var(--hud-border);
+                border-radius: 8px;
+                padding: clamp(1.75rem, 3.5vw, 3.5rem);
+                min-width: 0;
+            }
 
-			.page-tag {
-				font-size: 0.8rem;
-				color: var(--neon-blue);
-				letter-spacing: 0.1em;
-				margin-bottom: 0.5rem;
-				font-family: var(--font-mono);
-			}
+            .page-tag {
+                font-size: 0.8rem;
+                color: var(--neon-blue);
+                letter-spacing: 0.1em;
+                margin-bottom: 0.5rem;
+                font-family: var(--font-mono);
+            }
 
-			.page-title {
-				font-family: var(--font-display);
-				font-size: clamp(2rem, 3.2vw, 3.2rem);
-				line-height: 1.25;
-				color: #f8fafc;
-				margin-bottom: 1.75rem;
-			}
+            .page-title {
+                font-family: var(--font-display);
+                font-size: clamp(2rem, 3.2vw, 3.2rem);
+                line-height: 1.25;
+                color: #f8fafc;
+                margin-bottom: 1.75rem;
+            }
 
-			.page-lead {
-				font-size: clamp(1rem, 1.25vw, 1.2rem);
-				color: #e2e8f0;
-				line-height: 1.85;
-				border-left: 4px solid var(--neon-cyan);
-				background: rgba(56, 189, 248, 0.05);
-				padding: 1.5rem 1.75rem;
-				border-radius: 0 8px 8px 0;
-				margin-bottom: 3rem;
-			}
+            .page-lead {
+                font-size: clamp(1rem, 1.25vw, 1.15rem);
+                color: #e2e8f0;
+                line-height: 1.85;
+                border-left: 4px solid var(--neon-cyan);
+                background: rgba(56, 189, 248, 0.05);
+                padding: 1.5rem 1.75rem;
+                border-radius: 0 8px 8px 0;
+                margin-bottom: 3rem;
+            }
 
-			.content-body {
-				color: #cbd5e1;
-				font-size: clamp(0.95rem, 1.1vw, 1.1rem);
-				line-height: 1.9;
-			}
+            .content-body {
+                color: #cbd5e1;
+                font-size: clamp(0.92rem, 1.05vw, 1.05rem);
+                line-height: 1.85;
+            }
 
-			.content-body h2 {
-				font-family: var(--font-display);
-				font-size: clamp(1.35rem, 1.8vw, 1.75rem);
-				color: #f8fafc;
-				margin: 3.5rem 0 1.25rem;
-				border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-				padding-bottom: 0.6rem;
-			}
+            .content-body h2 {
+                font-family: var(--font-display);
+                font-size: clamp(1.25rem, 1.6vw, 1.6rem);
+                color: #f8fafc;
+                margin: 3rem 0 1.25rem;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                padding-bottom: 0.6rem;
+            }
 
-			.content-body p {
-				margin-bottom: 1.5rem;
-			}
+            .content-body p {
+                margin-bottom: 1.25rem;
+            }
 
-			.content-body ul {
-				margin-bottom: 1.75rem;
-				padding-left: 1.5rem;
-			}
+            .competencies-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 1.25rem;
+                margin: 1.5rem 0 2.5rem;
+            }
 
-			.content-body li {
-				margin-bottom: 0.6rem;
-			}
+            .competency-card {
+                background: rgba(15, 23, 42, 0.6);
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                border-radius: 6px;
+                padding: 1.25rem;
+            }
 
-			/* Experience Block */
-			.experience-entry {
-				border-left: 2px solid rgba(56, 189, 248, 0.4);
-				padding-left: 1.5rem;
-				margin-bottom: 2rem;
-				position: relative;
-			}
+            .competency-card h3 {
+                font-size: 0.95rem;
+                color: var(--neon-cyan);
+                margin-bottom: 0.5rem;
+                font-family: var(--font-mono);
+            }
 
-			.experience-entry::before {
-				content: '';
-				position: absolute;
-				left: -5px;
-				top: 4px;
-				width: 8px;
-				height: 8px;
-				border-radius: 50%;
-				background: var(--neon-cyan);
-				box-shadow: 0 0 8px var(--neon-cyan);
-			}
+            .competency-card p {
+                font-size: 0.85rem;
+                color: #94a3b8;
+                line-height: 1.6;
+                margin-bottom: 0;
+            }
 
-			.exp-header {
-				display: flex;
-				justify-content: space-between;
-				flex-wrap: wrap;
-				gap: 0.5rem;
-				margin-bottom: 0.4rem;
-			}
+            /* Timeline & Career History */
+            .experience-entry {
+                border-left: 2px solid rgba(56, 189, 248, 0.4);
+                padding-left: 1.5rem;
+                margin-bottom: 2rem;
+                position: relative;
+            }
 
-			.exp-role {
-				font-size: 1.05rem;
-				font-weight: 600;
-				color: #f8fafc;
-			}
+            .experience-entry::before {
+                content: '';
+                position: absolute;
+                left: -5px;
+                top: 6px;
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                background: var(--neon-cyan);
+                box-shadow: 0 0 8px var(--neon-cyan);
+            }
 
-			.exp-date {
-				font-size: 0.8rem;
-				color: #34d399;
-				font-family: var(--font-mono);
-			}
+            .exp-header {
+                display: flex;
+                justify-content: space-between;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                margin-bottom: 0.25rem;
+            }
 
-			.exp-org {
-				font-size: 0.88rem;
-				color: var(--neon-cyan);
-				margin-bottom: 0.75rem;
-				font-family: var(--font-mono);
-			}
+            .exp-role {
+                font-size: 1.05rem;
+                font-weight: 700;
+                color: #f8fafc;
+            }
 
-			@media (max-width: 1024px) {
-				.station-grid {
-					grid-template-columns: 1fr;
-					gap: 2rem;
-				}
-				.hud-sidebar {
-					position: static;
-				}
-			}
-		</style>
-	</head>
-	<body>
-		<main class="responsive-shell">
-			<a href="/" class="back-btn" aria-label="Return to Command Telemetry Grid Home">
-				← RETURN TO COMMAND GRID
-			</a>
+            .exp-date {
+                font-size: 0.8rem;
+                color: #34d399;
+                font-family: var(--font-mono);
+            }
 
-			<div class="station-grid">
-				<aside class="hud-sidebar" aria-label="Personnel Telemetry Metadata">
-					<div class="sidebar-header">PERSONNEL TELEMETRY</div>
+            .exp-org {
+                font-size: 0.88rem;
+                color: var(--neon-cyan);
+                margin-bottom: 0.75rem;
+                font-family: var(--font-mono);
+                display: block;
+            }
 
-					<div class="meta-row">
-						<div class="meta-label">DESIGNATION</div>
-						<div class="meta-val">Nathan Jarvis, ACABE</div>
-					</div>
+            .experience-entry ul {
+                padding-left: 1.25rem;
+                margin-top: 0.5rem;
+            }
 
-					<div class="meta-row">
-						<div class="meta-label">PRIMARY DISCIPLINE</div>
-						<div class="meta-val" style="color: var(--neon-cyan);">Building Services Engineering &amp; Asset Management</div>
-					</div>
+            .experience-entry li {
+                font-size: 0.88rem;
+                color: #cbd5e1;
+                margin-bottom: 0.4rem;
+            }
 
-					<div class="meta-row">
-						<div class="meta-label">PROFESSIONAL ACCREDITATION</div>
-						<div class="meta-val">Associate Member (ACABE)<br /><span style="font-size: 0.78rem; color: #cbd5e1;">Chartered Association of Building Engineers</span></div>
-					</div>
+            /* Credentials Grid */
+            .credentials-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+                gap: 1rem;
+                margin-top: 1.25rem;
+            }
 
-					<div class="meta-row">
-						<div class="meta-label">OPERATIONAL STATUS</div>
-						<div class="meta-val"><span class="status-pill">ACTIVE // PRACTICING</span></div>
-					</div>
+            .credential-card {
+                display: flex;
+                flex-direction: column;
+                gap: 0.35rem;
+                padding: 1rem 1.25rem;
+                background: rgba(15, 23, 42, 0.6);
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                border-radius: 6px;
+                text-decoration: none;
+                transition: border-color 0.2s ease, background 0.2s ease;
+            }
 
-					<div class="meta-row">
-						<div class="meta-label">TECHNICAL TOOLSET</div>
-						<div class="tech-stack-list">
-							<span class="tech-badge">M&amp;E Surveying</span>
-							<span class="tech-badge">Asset Lifecycle Modelling</span>
-							<span class="tech-badge">Energy Compliance</span>
-							<span class="tech-badge">Building Physics</span>
-							<span class="tech-badge">RoHS / Ecodesign</span>
-							<span class="tech-badge">Typst Scientific Typesetting</span>
-							<span class="tech-badge">AutoCAD</span>
-						</div>
-					</div>
-				</aside>
+            .credential-card:hover {
+                border-color: var(--neon-cyan);
+                background: rgba(56, 189, 248, 0.04);
+            }
 
-				<section class="main-stream">
-					<div class="page-tag">STATION // 01</div>
-					<h1 class="page-title">Operations &amp; Professional Profile</h1>
-					<p class="page-lead">
-						Building Services professional and Associate Member of the Chartered Association of Building Engineers (ACABE), specialising in Mechanical &amp; Electrical condition surveys, building performance analytics, statutory compliance, and data-driven estate lifecycle strategy.
-					</p>
+            .cred-title {
+                font-size: 0.92rem;
+                font-weight: 600;
+                color: #f8fafc;
+            }
 
-					<div class="content-body">
-						<h2>1. Core Engineering Competencies</h2>
-						<p>
-							Applying quantitative methodologies to survey complex built environments, quantify parasitic energy losses, and deliver defensible capital renewal strategies for estate operators and property managers:
-						</p>
-						<ul>
-							<li><strong>M&amp;E Condition Surveys &amp; Dilapidations:</strong> Comprehensive asset tagging, degradation state evaluation, CIBSE guide compliance, and risk-indexed replacement planning across public and commercial estates.</li>
-							<li><strong>Energy Economics &amp; Parasitic Loss Audits:</strong> Conducting active power dissipation measurements, ferromagnetic vs. solid-state lighting conversions, and empirical lifecycle payback modelling.</li>
-							<li><strong>Statutory Compliance &amp; Regulatory Transitions:</strong> Guiding estate transitions through UK RoHS phase-outs, Ecodesign regulations, Part L energy conservation compliance, and fire/building safety mandates.</li>
-							<li><strong>Technical Research &amp; Scientific Documentation:</strong> Authoring peer-reviewed engineering preprints and technical reports typeset in Typst with mathematically verified thermodynamic and electrical models.</li>
-						</ul>
+            .cred-issuer {
+                font-size: 0.75rem;
+                color: #94a3b8;
+                font-family: var(--font-mono);
+            }
 
-						<h2>2. Professional Background &amp; Focus</h2>
-						
-						<div class="experience-entry">
-							<div class="exp-header">
-								<span class="exp-role">Building Services &amp; M&amp;E Condition Assessor</span>
-								<span class="exp-date">2023 &mdash; PRESENT</span>
-							</div>
-							<div class="exp-org">Commercial, Healthcare &amp; Public Sector Estates</div>
-							<p>
-								Executing site-wide mechanical, electrical, and public health asset condition appraisals. Producing multi-year forward maintenance registers (FMR), identifying high-risk legacy plant liabilities, and modelling decarbonisation pathways.
-							</p>
-						</div>
+            .cred-verify {
+                font-size: 0.72rem;
+                color: var(--neon-emerald);
+                font-family: var(--font-mono);
+                margin-top: 0.25rem;
+            }
 
-						<div class="experience-entry">
-							<div class="exp-header">
-								<span class="exp-role">Engineering Author &amp; Independent Researcher</span>
-								<span class="exp-date">2024 &mdash; PRESENT</span>
-							</div>
-							<div class="exp-org">Academic Preprints &amp; Technical Deep Dives</div>
-							<p>
-								Formulating mathematical proofs, contact mechanics evaluations, and active circuit dissipation analyses spanning tribological lubrication regimes and building energy systems.
-							</p>
-						</div>
+            @media (max-width: 1024px) {
+                .station-grid {
+                    grid-template-columns: minmax(0, 1fr);
+                    gap: 2rem;
+                }
+                .hud-sidebar {
+                    position: static;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <main class="responsive-shell">
+            <a href="/" class="back-btn" aria-label="Return to Homepage">
+                ← RETURN TO PORTFOLIO HOME
+            </a>
 
-						<h2>3. Engineering Methodology</h2>
-						<p>
-							Every assessment is grounded in empirical field data, peer-reviewed engineering frameworks, and transparent lifecycle calculations—eliminating subjective assumptions in favor of verifiable technical evidence.
-						</p>
-					</div>
-				</section>
-			</div>
-		</main>
-		<Footer />
-	</body>
+            <div class="station-grid">
+                <!-- Sidebar Summary -->
+                <aside class="hud-sidebar" aria-label="Professional Profile Metadata">
+                    <div class="sidebar-header">PROFILE & ACCREDITATIONS</div>
+
+                    <div class="meta-row">
+                        <div class="meta-label">CONSULTANT</div>
+                        <div class="meta-val">Nathan Jarvis, ACABE</div>
+                    </div>
+
+                    <div class="meta-row">
+                        <div class="meta-label">PRIMARY DISCIPLINE</div>
+                        <div class="meta-val" style="color: var(--neon-cyan);">Building Services &amp; Asset Management</div>
+                    </div>
+
+                    <div class="meta-row">
+                        <div class="meta-label">CURRENT PRACTICE</div>
+                        <div class="meta-val">Troup Bywaters + Anders</div>
+                    </div>
+
+                    <div class="meta-row">
+                        <div class="meta-label">ACADEMIC PATH</div>
+                        <div class="meta-val">Integrated MEng (Energy &amp; Sustainability)<br /><span style="font-size: 0.78rem; color: #94a3b8;">The Open University (Oct 2026)</span></div>
+                    </div>
+
+                    <div class="meta-row">
+                        <div class="meta-label">STATUS</div>
+                        <div class="meta-val"><span class="status-pill">ACABE REGISTERED</span></div>
+                    </div>
+
+                    <div class="meta-row">
+                        <div class="meta-label">DIGITAL TOOLS & CAFM</div>
+                        <div class="tech-stack-list">
+                            <span class="tech-badge">Vantify</span>
+                            <span class="tech-badge">Concept Evolution</span>
+                            <span class="tech-badge">Joblogic</span>
+                            <span class="tech-badge">CIBSE Guide M</span>
+                            <span class="tech-badge">RICS NRM3</span>
+                            <span class="tech-badge">SFG20</span>
+                            <span class="tech-badge">LaTeX / Typst</span>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Main Content Body -->
+                <section class="main-stream">
+                    <div class="page-tag">STATION // 01</div>
+                    <h1 class="page-title">Operations &amp; Professional Profile</h1>
+                    <p class="page-lead">
+                        Building Services Consultant with over five years of hands-on technical engineering experience across complex MEP installations. Currently delivering strategic lifecycle costing, asset condition appraisals, and forward capital renewal models at Troup Bywaters + Anders.
+                    </p>
+
+                    <div class="content-body">
+                        <h2>1. Core Engineering Competencies</h2>
+                        <div class="competencies-grid">
+                            <div class="competency-card">
+                                <h3>Asset & Lifecycle Management</h3>
+                                <p>10–20 year forward capital expenditure (Capex) planning, CIBSE Guide M Remaining Useful Life (RUL) modeling, dilapidation surveys, and Asset Information Models (AIM).</p>
+                            </div>
+                            <div class="competency-card">
+                                <h3>MEP Infrastructure & Plant</h3>
+                                <p>Central HVAC (AHUs, FCUs, chillers), LV switchgear, 3-phase power distribution, CHP generation, booster sets, and commercial boiler plant.</p>
+                            </div>
+                            <div class="competency-card">
+                                <h3>Statutory Compliance</h3>
+                                <p>SFG20 maintenance frameworks, BS 7671 (18th Edition), ACoP L8 Legionella water safety, Life Safety Systems, and Network Rail asset standards.</p>
+                            </div>
+                            <div class="competency-card">
+                                <h3>Digital Asset Modelling</h3>
+                                <p>CAFM integration (Vantify, Concept Evolution, Joblogic), technical drawing cross-referencing, and lifecycle inflation derating models.</p>
+                            </div>
+                        </div>
+
+                        <h2>2. Professional Career History</h2>
+
+                        <div class="experience-entry">
+                            <div class="exp-header">
+                                <span class="exp-role">Asset Management Consultant</span>
+                                <span class="exp-date">JUNE 2026 &mdash; PRESENT</span>
+                            </div>
+                            <span class="exp-org">Troup Bywaters + Anders</span>
+                            <ul>
+                                <li>Conduct comprehensive MEP asset condition surveys, dilapidation reviews, and PFI appraisals across commercial and infrastructure estates.</li>
+                                <li>Formulate 10–20 year Forward Capital Cost plans and calculate Remaining Useful Life (RUL) metrics to guide client replacement programmes.</li>
+                                <li>Perform statutory compliance audits and operational reviews across retail assets under the Network Rail framework.</li>
+                                <li>Author technical due diligence reports and Planned Preventative Maintenance (PPM) schedules aligned with SFG20 and industry best practice.</li>
+                            </ul>
+                        </div>
+
+                        <div class="experience-entry">
+                            <div class="exp-header">
+                                <span class="exp-role">Mobile Building Services Engineer</span>
+                                <span class="exp-date">OCT 2025 &mdash; JUNE 2026</span>
+                            </div>
+                            <span class="exp-org">CBRE</span>
+                            <ul>
+                                <li>Delivered mechanical and electrical maintenance across multi-site portfolios in compliance with BS 7671 and SFG20.</li>
+                                <li>Audited handover documentation, O&M manuals, and asset registers (AIM) to reconcile installed plant against design specs.</li>
+                                <li>Executed root-cause failure analysis on complex plant breakdowns to eliminate recurring faults.</li>
+                            </ul>
+                        </div>
+
+                        <div class="experience-entry">
+                            <div class="exp-header">
+                                <span class="exp-role">Lead Building Services Engineer</span>
+                                <span class="exp-date">JAN 2025 &mdash; SEPT 2025</span>
+                            </div>
+                            <span class="exp-org">MS Maintenance Solutions</span>
+                            <ul>
+                                <li>Managed electrical distribution, critical backup power, and life safety systems across commercial client facilities.</li>
+                                <li>Coordinated water hygiene testing, statutory compliance documentation, and structured PPM workflows.</li>
+                            </ul>
+                        </div>
+
+                        <div class="experience-entry">
+                            <div class="exp-header">
+                                <span class="exp-role">Lead Building Services Engineer</span>
+                                <span class="exp-date">APRIL 2023 &mdash; DEC 2024</span>
+                            </div>
+                            <span class="exp-org">Apleona CTS / Acorn M&amp;E</span>
+                            <ul>
+                                <li>Maintained and overhauled high-value central plant, including VSD motors, pump sets, and commercial chiller/boiler systems.</li>
+                                <li>Utilised technical drawings and system manuals to optimize maintenance workflows and plant efficiency.</li>
+                            </ul>
+                        </div>
+
+                        <div class="experience-entry">
+                            <div class="exp-header">
+                                <span class="exp-role">Senior Building Services Engineer</span>
+                                <span class="exp-date">NOV 2019 &mdash; APRIL 2023</span>
+                            </div>
+                            <span class="exp-org">Virgin Active</span>
+                            <ul>
+                                <li>Provided technical oversight for combined heat and power (CHP) units, LV switchboards, and complex water treatment plant under SFG20 frameworks.</li>
+                            </ul>
+                        </div>
+
+                        <h2>3. Education &amp; Verified Qualifications</h2>
+                        <div class="credentials-grid">
+                            <div class="credential-card">
+                                <span class="cred-title">Integrated Master of Engineering (MEng)</span>
+                                <span class="cred-issuer">The Open University • Starting Oct 2026</span>
+                                <span class="cred-verify">Energy &amp; Sustainability / Modelling</span>
+                            </div>
+
+                            <a href="https://www.credly.com" target="_blank" rel="noopener noreferrer" class="credential-card">
+                                <span class="cred-title">BS 7671 (18th Edition Requirements)</span>
+                                <span class="cred-issuer">City &amp; Guilds Level 3 Award</span>
+                                <span class="cred-verify">Verified Credential ↗</span>
+                            </a>
+
+                            <a href="https://www.credly.com" target="_blank" rel="noopener noreferrer" class="credential-card">
+                                <span class="cred-title">Inspection &amp; Testing of Electrical Equipment</span>
+                                <span class="cred-issuer">City &amp; Guilds Level 2 Certificate</span>
+                                <span class="cred-verify">Verified Credential ↗</span>
+                            </a>
+
+                            <a href="https://www.credly.com" target="_blank" rel="noopener noreferrer" class="credential-card">
+                                <span class="cred-title">Electrical Installation (2365)</span>
+                                <span class="cred-issuer">City &amp; Guilds Level 2 Diploma</span>
+                                <span class="cred-verify">Verified Credential ↗</span>
+                            </a>
+
+                            <a href="https://www.credly.com" target="_blank" rel="noopener noreferrer" class="credential-card">
+                                <span class="cred-title">Building Regulations in Dwellings (Part P)</span>
+                                <span class="cred-issuer">City &amp; Guilds Level 3 Certificate</span>
+                                <span class="cred-verify">Verified Credential ↗</span>
+                            </a>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+        <Footer />
+    </body>
 </html>

@@ -11,7 +11,7 @@ import { CIBSE_GUIDE_M_DATA } from '../data/cibseGuideMData';
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta
             name="description"
-            content="Interactive CIBSE Guide M / RICS NRM3 Asset Lifecycle & Forward Replacement Calculator by Nathan Jarvis, ACABE. Models component degradation, maintenance factors, and inflation escalation."
+            content="Interactive CIBSE Guide M / RICS NRM3 Asset Lifecycle & Forward Replacement Calculator by Nathan Jarvis, ACABE. Models component degradation, maintenance deratings, and inflation escalation."
         />
         <title>Station 05 // Plant Lifecycle Modeler (CIBSE Guide M) - Nathan Jarvis, ACABE</title>
         <style>
@@ -200,6 +200,7 @@ import { CIBSE_GUIDE_M_DATA } from '../data/cibseGuideMData';
                 display: flex;
                 flex-direction: column;
                 gap: 0.4rem;
+                min-width: 0;
             }
 
             .form-label {
@@ -336,7 +337,7 @@ import { CIBSE_GUIDE_M_DATA } from '../data/cibseGuideMData';
                 }
             }
 
-            /* Mobile & iPad Mini Portrait */
+            /* Mobile & Small Tablet */
             @media (max-width: 640px) {
                 .metric-card-row {
                     grid-template-columns: minmax(0, 1fr);
