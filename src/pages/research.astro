@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import Footer from '../components/Footer.astro';
+import Analytics from '@vercel/analytics/astro';
 import { getCollection } from 'astro:content';
 
 const allPosts = await getCollection('blog');
@@ -28,6 +29,7 @@ const sortedPapers = displayPapers.sort(
 			content="Station 03 Research & Preprints - Peer-reviewed engineering preprints and Typst typeset technical reports on thermodynamic modeling, contact mechanics, and building physics by Nathan Jarvis, ACABE."
 		/>
 		<title>Station 03 // Research &amp; Publications - Nathan Jarvis, ACABE</title>
+		<Analytics />
 		<style>
 			:root {
 				--neon-cyan: #38bdf8;

@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import Footer from '../components/Footer.astro';
+import Analytics from '@vercel/analytics/astro';
 
 // Capture the redirect status from the API endpoint
 const status = Astro.url.searchParams.get('status');
@@ -16,6 +17,7 @@ const status = Astro.url.searchParams.get('status');
             content="Station 04 Engineering Consultation & Enquiries - Direct dispatch endpoint to commission M&E condition surveys, statutory compliance audits, and discuss academic research briefs with Nathan Jarvis, ACABE."
         />
         <title>Station 04 // Comms &amp; Consultation - Nathan Jarvis, ACABE</title>
+        <Analytics />
         <style>
             :root {
                 --neon-cyan: #38bdf8;
