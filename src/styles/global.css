@@ -36,7 +36,7 @@ a {
 }
 
 /* Responsive Image Styling */
-.article-body :global(img) {
+.article-body :global img {
   max-width: 100%;
   height: auto;
   border-radius: 6px;
