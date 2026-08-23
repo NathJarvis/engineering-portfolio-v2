@@ -2,28 +2,30 @@
 import { getCollection, getEntry, render, type CollectionEntry } from 'astro:content';
 import DeepDiveLayout from '../../layouts/DeepDiveLayout.astro';
 
+export const prerender = true; // <-- Add this line right here
+
 export async function getStaticPaths() {
-	const posts = await getCollection('blog');
-	return posts.map((post) => ({
-		params: { id: post.id },
-		props: { post },
-	}));
+    const posts = await getCollection('blog');
+    return posts.map((post) => ({
+        params: { id: post.id },
+        props: { post },
+    }));
 }
 
 const { id } = Astro.params;
 let post = Astro.props.post as CollectionEntry<'blog'> | undefined;
 
 if (!post && id) {
-	post = await getEntry('blog', id);
+    post = await getEntry('blog', id);
 }
 
 if (!post) {
-	return Astro.redirect('/404');
+    return Astro.redirect('/404');
 }
 
 const { Content } = await render(post);
 ---
 
 <DeepDiveLayout frontmatter={post.data}>
-	<Content />
+    <Content />
 </DeepDiveLayout>
