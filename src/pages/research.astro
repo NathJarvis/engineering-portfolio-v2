@@ -1,20 +1,25 @@
 ---
 import '../styles/global.css';
 import Footer from '../components/Footer.astro';
-import { getCollection } from 'astro:content';
 
-const allPosts = await getCollection('blog');
-const papers = allPosts.filter(
-    (post) =>
-        post.data.category?.toLowerCase() === 'research' ||
-        post.data.tag?.toLowerCase() === 'research' ||
-        post.data.typstPdfUrl
-);
+// Directly grab all markdown files in src/papers/
+const paperFiles = import.meta.glob<{
+    frontmatter: {
+        title: string;
+        description?: string;
+        publishDate?: string;
+        tag?: string;
+        category?: string;
+        pdfUrl?: string;
+        typstPdfUrl?: string;
+        externalUrl?: string;
+    };
+}>('../papers/*.{md,mdx}', { eager: true });
 
-const displayPapers = papers.length > 0 ? papers : allPosts;
+const papers = Object.values(paperFiles).map((file) => file.frontmatter);
 
-const sortedPapers = displayPapers.sort(
-    (a, b) => new Date(b.data.publishDate).valueOf() - new Date(a.data.publishDate).valueOf()
+const sortedPapers = papers.sort(
+    (a, b) => new Date(b.publishDate || '2026').valueOf() - new Date(a.publishDate || '2026').valueOf()
 );
 ---
 
@@ -341,50 +346,58 @@ const sortedPapers = displayPapers.sort(
 
                     <div class="research-stack">
                         {
-                            sortedPapers.map((paper) => (
-                                <article class="paper-card">
-                                    <div>
-                                        <div class="paper-meta-line">
-                                            <span class="paper-badge">
-                                                {paper.data.tag || paper.data.category || 'ENGINEERING RESEARCH'}
-                                            </span>
-                                            <time datetime={new Date(paper.data.publishDate).toISOString()}>
-                                                {new Date(paper.data.publishDate).toLocaleDateString('en-GB', {
-                                                    year: 'numeric',
-                                                    month: 'short',
-                                                    day: 'numeric',
-                                                })}
-                                            </time>
-                                        </div>
-                                        <h2 class="paper-heading">{paper.data.title}</h2>
-                                        <p class="paper-abstract">{paper.data.description}</p>
-                                    </div>
+                            sortedPapers.map((paper) => {
+                                const downloadUrl = paper.pdfUrl || paper.typstPdfUrl;
 
-                                    <div class="paper-actions">
-                                        <span style="color: #94a3b8;">FORMAT: PDF / OPEN ACCESS</span>
-                                        <div class="action-btn-group">
-                                            {paper.data.typstPdfUrl && (
-                                                <a
-                                                    href={paper.data.typstPdfUrl}
-                                                    class="paper-btn primary"
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    aria-label={`Download PDF manuscript for ${paper.data.title}`}
-                                                >
-                                                    DOWNLOAD PDF ↓
-                                                </a>
-                                            )}
-                                            <a
-                                                href={`/blog/${paper.id}`}
-                                                class="paper-btn"
-                                                aria-label={`Read online documentation for ${paper.data.title}`}
-                                            >
-                                                VIEW ONLINE PAPER →
-                                            </a>
+                                return (
+                                    <article class="paper-card">
+                                        <div>
+                                            <div class="paper-meta-line">
+                                                <span class="paper-badge">
+                                                    {paper.tag || paper.category || 'ENGINEERING RESEARCH'}
+                                                </span>
+                                                <time datetime={new Date(paper.publishDate || '2026').toISOString()}>
+                                                    {new Date(paper.publishDate || '2026').toLocaleDateString('en-GB', {
+                                                        year: 'numeric',
+                                                        month: 'short',
+                                                        day: 'numeric',
+                                                    })}
+                                                </time>
+                                            </div>
+                                            <h2 class="paper-heading">{paper.title}</h2>
+                                            <p class="paper-abstract">{paper.description}</p>
                                         </div>
-                                    </div>
-                                </article>
-                            ))
+
+                                        <div class="paper-actions">
+                                            <span style="color: #94a3b8;">FORMAT: PDF / OPEN ACCESS</span>
+                                            <div class="action-btn-group">
+                                                {downloadUrl && (
+                                                    <a
+                                                        href={downloadUrl}
+                                                        class="paper-btn primary"
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        aria-label={`Download PDF manuscript for ${paper.title}`}
+                                                    >
+                                                        DOWNLOAD PDF ↓
+                                                    </a>
+                                                )}
+                                                {paper.externalUrl && (
+                                                    <a
+                                                        href={paper.externalUrl}
+                                                        class="paper-btn"
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        aria-label={`View discussion and summary for ${paper.title}`}
+                                                    >
+                                                        VIEW ARTICLE / LINKEDIN ↗
+                                                    </a>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </article>
+                                );
+                            })
                         }
                     </div>
                 </section>
