@@ -6,6 +6,9 @@ publishDate: "26 JULY 2026"
 description: "A systems engineering lens (T192) to the mechanical dynamics inside an AHU, focusing on mechanical power transmission, internal performance drift, and how EC fan retrofits can redefine the operational baseline."
 typstPdfUrl: "/papers/Deep-Dive-2.pdf"
 externalUrl: "https://www.linkedin.com/pulse/beyond-sheet-metal-hidden-mechanics-ahu-performance-drift-jarvis-9wbve/"
+import beltDriveImage from '../images/belt-drive.png';
+import directDriveImage from '../images/direct-drive.png';
+import directDriveImage from '../images/comparison-table.png';
 ---
 
 A 15-year-old Air Handling Unit (AHU) with a clean, intact casing and solid structural integrity, these are often the first features noted during an initial site survey.
@@ -21,9 +24,9 @@ Air Handling Units can be configured in several ways, but two of the most common
 Belt Drive System - A traditional setup where the motor is physically separated from the fan. Rotational power is transferred via a belt connecting pulleys on both the motor and fan shaft. This configuration requires regular maintenance due to belt wear, bearing fatigue, tension drop, and belt slippage.
 
 <figure style="margin: 2rem 0; text-align: center;">
-  <img 
-    src="src\images\belt-drive.png" 
-    alt="Energy consumption comparison" 
+  <Image 
+    src={beltDriveImage} 
+    alt="Belt Drive Flow" 
     style="max-width: 100%; border: 1px solid var(--hud-border); border-radius: 6px;"
   />
   <figcaption style="font-size: 0.75rem; color: #94a3b8; margin-top: 0.5rem; font-family: var(--font-mono);">
@@ -34,9 +37,9 @@ Belt Drive System - A traditional setup where the motor is physically separated 
 Direct Drive System - A modern approach that eliminates several mechanical moving parts. The fan impeller is mounted directly onto the motor shaft, reducing failure points and eliminating belt-related maintenance entirely.
 
 <figure style="margin: 2rem 0; text-align: center;">
-  <img 
-    src="src/images/direct-drive.png" 
-    alt="Energy consumption comparison" 
+  <Image 
+    src={directDriveImage} 
+    alt="Direct Drive Flow" 
     style="max-width: 100%; border: 1px solid var(--hud-border); border-radius: 6px;"
   />
   <figcaption style="font-size: 0.75rem; color: #94a3b8; margin-top: 0.5rem; font-family: var(--font-mono);">
@@ -81,8 +84,8 @@ During the design phase every component within an AHU is selected to deliver a s
 ## ⚡ Legacy Belt-Driven vs. Direct-Drive EC Fans
 
 <figure style="margin: 2rem 0; text-align: center;">
-  <img 
-    src="src/images/comparison-table.png" 
+  <Image 
+    src={comparisonTableImage} 
     alt="Table of comparison for Belt Driven and Direct Drive" 
     style="max-width: 100%; border: 1px solid var(--hud-border); border-radius: 6px;"
   />
