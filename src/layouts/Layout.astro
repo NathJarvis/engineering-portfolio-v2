@@ -7,6 +7,7 @@ interface Props {
     image?: string;
     author?: string;
     pubDate?: Date;
+    type?: 'website' | 'article';
 }
 
 const {
@@ -15,6 +16,7 @@ const {
     image = "/favicon.svg",
     author = "Nathan Jarvis, ACABE",
     pubDate,
+	type = "website", // Defaults to website if not specified
 } = Astro.props;
 
 // 1. Conditionally format dates only if pubDate exists
@@ -41,7 +43,7 @@ const imageUrl = new URL(image, Astro.site || Astro.url.origin).href;
         <link rel="canonical" href={canonicalURL} />
 
         <!-- Open Graph / Facebook -->
-        <meta property="og:type" content="website" /> <!-- Note: usually lowercase -->
+        <meta property="og:type" content={type} /> <!-- Note: usually lowercase -->
         <meta property="og:url" content={canonicalURL} />
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
