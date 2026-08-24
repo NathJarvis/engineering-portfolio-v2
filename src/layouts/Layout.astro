@@ -13,20 +13,13 @@ interface Props {
 const {
     title = "Nathan Jarvis, ACABE - Building Services Consultant & Engineering Researcher",
     description = "Building Services Consultant & Engineering Researcher specialising in M&E condition surveys, plant lifecycle asset management, and statutory energy compliance.",
-    image = "../images/favicon.svg",
+    image = "/og-image.png", // Must be a raster format (PNG/JPG) for Open Graph compatibility
     author = "Nathan Jarvis, ACABE",
     pubDate,
-	type = "website", // Defaults to website if not specified
+    type = "website",
 } = Astro.props;
 
-// 1. Conditionally format dates only if pubDate exists
 const isoDate = pubDate ? pubDate.toISOString() : undefined; 
-
-const formattedDate = pubDate ? pubDate.toLocaleDateString('en-GB', {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-}) : undefined;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site || Astro.url.origin);
 const imageUrl = new URL(image, Astro.site || Astro.url.origin).href;
@@ -43,13 +36,12 @@ const imageUrl = new URL(image, Astro.site || Astro.url.origin).href;
         <link rel="canonical" href={canonicalURL} />
 
         <!-- Open Graph / Facebook -->
-        <meta property="og:type" content={type} /> <!-- Note: usually lowercase -->
+        <meta property="og:type" content={type} />
         <meta property="og:url" content={canonicalURL} />
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
         <meta property="og:image" content={imageUrl} />
         
-        <!-- 2. Conditionally render the published_time tag -->
         {isoDate && <meta property="article:published_time" content={isoDate} />}
 
         <!-- Twitter -->
@@ -59,6 +51,7 @@ const imageUrl = new URL(image, Astro.site || Astro.url.origin).href;
         <meta property="twitter:description" content={description} />
         <meta property="twitter:image" content={imageUrl} />
 
+        <!-- Corrected Favicon Paths -->
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     </head>
