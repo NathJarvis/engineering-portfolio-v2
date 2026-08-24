@@ -6,6 +6,7 @@ interface Props {
 	description?: string;
 	image?: string;
 	author?: string;
+	pubDate?: string;
 }
 
 const {
@@ -13,6 +14,7 @@ const {
 	description = "Building Services Consultant & Engineering Researcher specialising in M&E condition surveys, plant lifecycle asset management, and statutory energy compliance.",
 	image = "/favicon.svg",
 	author = "Nathan Jarvis, ACABE",
+	pubDate,
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site || Astro.url.origin);
@@ -27,6 +29,7 @@ const imageUrl = new URL(image, Astro.site || Astro.url.origin).href;
 		<title>{title}</title>
 		<meta name="description" content={description} />
 		<meta name="author" content={author} />
+		<meta name="author" content="Nathan Jarvis, ACABE" />
 		<link rel="canonical" href={canonicalURL} />
 
 		<!-- Open Graph / Facebook -->
@@ -34,7 +37,7 @@ const imageUrl = new URL(image, Astro.site || Astro.url.origin).href;
 		<meta property="og:url" content={canonicalURL} />
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
-		<meta property="og:image" content={imageUrl} />
+		<meta name="og:image" property="og:image" content={imageUrl} />
 
 		<!-- Twitter -->
 		<meta property="twitter:card" content="summary_large_image" />
@@ -42,6 +45,7 @@ const imageUrl = new URL(image, Astro.site || Astro.url.origin).href;
 		<meta property="twitter:title" content={title} />
 		<meta property="twitter:description" content={description} />
 		<meta property="twitter:image" content={imageUrl} />
+		{pubDate && <meta property="article:published_time" content={pubDate} />}
 
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" type="image/x-icon" href="/favicon.ico" />
