@@ -1,415 +1,407 @@
 ---
-import '../styles/global.css';
+import Layout from '../layouts/Layout.astro';
 import Footer from '../components/Footer.astro';
 
 // Capture the redirect status from the API endpoint
 const status = Astro.url.searchParams.get('status');
+
+const title = "Station 04 // Consultation & Enquiries - Nathan Jarvis, ACABE";
+const description = "Station 04 Engineering Consultation & Enquiries - Contact Nathan Jarvis, ACABE for MEP condition surveys, plant lifecycle asset appraisals, and statutory compliance auditing.";
 ---
 
-<!doctype html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta
-            name="description"
-            content="Station 04 Engineering Consultation & Enquiries - Contact Nathan Jarvis, ACABE for MEP condition surveys, plant lifecycle asset appraisals, and statutory compliance auditing."
-        />
-        <title>Station 04 // Consultation &amp; Enquiries - Nathan Jarvis, ACABE</title>
-        <style>
-            :root {
-                --neon-cyan: #38bdf8;
-                --neon-blue: #60a5fa;
-                --neon-emerald: #34d399;
-                --neon-amber: #f59e0b;
-                --neon-rose: #f43f5e;
-                --hud-bg: rgba(7, 12, 24, 0.88);
-                --hud-border: rgba(56, 189, 248, 0.25);
-                --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-                --font-display: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            }
+<Layout title={title} description={description}>
+    <style>
+        :root {
+            --neon-cyan: #38bdf8;
+            --neon-blue: #60a5fa;
+            --neon-emerald: #34d399;
+            --neon-amber: #f59e0b;
+            --neon-rose: #f43f5e;
+            --hud-bg: rgba(7, 12, 24, 0.88);
+            --hud-border: rgba(56, 189, 248, 0.25);
+            --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            --font-display: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
 
-            * {
-                box-sizing: border-box;
-                margin: 0;
-                padding: 0;
-            }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-            body {
-                background: #030712;
-                min-height: 100vh;
-                display: flex;
-                flex-direction: column;
-                user-select: text;
-                overflow-x: hidden;
-            }
+        body {
+            background: #030712;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            user-select: text;
+            overflow-x: hidden;
+        }
 
-            .responsive-shell {
-                width: min(1440px, 95vw);
-                margin: 0 auto;
-                padding: clamp(1.5rem, 2.5vw, 3rem) 0 4rem;
-                flex: 1;
-            }
+        .responsive-shell {
+            width: min(1440px, 95vw);
+            margin: 0 auto;
+            padding: clamp(1.5rem, 2.5vw, 3rem) 0 4rem;
+            flex: 1;
+        }
 
-            .back-btn {
-                display: inline-flex;
-                align-items: center;
-                gap: 0.5rem;
-                font-size: 0.85rem;
-                color: var(--neon-cyan);
-                margin-bottom: 2.5rem;
-                padding: 0.5rem 1rem;
-                background: rgba(56, 189, 248, 0.08);
-                border: 1px solid var(--hud-border);
-                border-radius: 4px;
-                transition: background 0.15s ease, border-color 0.15s ease;
-                text-decoration: none;
-                font-family: var(--font-mono);
-            }
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--neon-cyan);
+            margin-bottom: 2.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(56, 189, 248, 0.08);
+            border: 1px solid var(--hud-border);
+            border-radius: 4px;
+            transition: background 0.15s ease, border-color 0.15s ease;
+            text-decoration: none;
+            font-family: var(--font-mono);
+        }
 
-            .back-btn:hover {
-                background: rgba(56, 189, 248, 0.18);
-                border-color: #7dd3fc;
-            }
+        .back-btn:hover {
+            background: rgba(56, 189, 248, 0.18);
+            border-color: #7dd3fc;
+        }
 
+        .station-grid {
+            display: grid;
+            grid-template-columns: minmax(280px, 340px) minmax(0, 1fr);
+            gap: clamp(2rem, 3.5vw, 4rem);
+            align-items: start;
+        }
+
+        /* Contact Sidebar */
+        .hud-sidebar {
+            position: sticky;
+            top: 2rem;
+            background: var(--hud-bg);
+            border: 1px solid var(--hud-border);
+            border-radius: 8px;
+            padding: 1.75rem;
+            backdrop-filter: blur(12px);
+            min-width: 0;
+        }
+
+        .sidebar-header {
+            font-size: 0.75rem;
+            color: var(--neon-cyan);
+            letter-spacing: 0.12em;
+            margin-bottom: 1.25rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            padding-bottom: 0.6rem;
+            font-family: var(--font-mono);
+        }
+
+        .meta-row {
+            margin-bottom: 1.25rem;
+        }
+
+        .meta-label {
+            font-size: 0.72rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 0.25rem;
+            font-family: var(--font-mono);
+        }
+
+        .meta-val {
+            font-size: 0.88rem;
+            color: #f8fafc;
+            line-height: 1.45;
+        }
+
+        .status-pill {
+            display: inline-block;
+            background: rgba(52, 211, 153, 0.15);
+            border: 1px solid rgba(52, 211, 153, 0.5);
+            color: #34d399;
+            padding: 0.25rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-family: var(--font-mono);
+        }
+
+        /* Main Content Stream */
+        .main-stream {
+            background: rgba(7, 12, 24, 0.75);
+            border: 1px solid var(--hud-border);
+            border-radius: 8px;
+            padding: clamp(1.75rem, 3.5vw, 3.5rem);
+            min-width: 0;
+        }
+
+        .page-tag {
+            font-size: 0.8rem;
+            color: var(--neon-blue);
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+            font-family: var(--font-mono);
+        }
+
+        .page-title {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 3.2vw, 3.2rem);
+            line-height: 1.25;
+            color: #f8fafc;
+            margin-bottom: 1.75rem;
+        }
+
+        .page-lead {
+            font-size: clamp(1rem, 1.25vw, 1.15rem);
+            color: #e2e8f0;
+            line-height: 1.85;
+            border-left: 4px solid var(--neon-cyan);
+            background: rgba(56, 189, 248, 0.05);
+            padding: 1.5rem 1.75rem;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 2.5rem;
+        }
+
+        /* Feedback Banners */
+        .telemetry-alert {
+            padding: 1rem 1.25rem;
+            border-radius: 6px;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-family: var(--font-mono);
+            font-size: 0.88rem;
+        }
+
+        .telemetry-alert.success {
+            background: rgba(52, 211, 153, 0.1);
+            border: 1px solid rgba(52, 211, 153, 0.4);
+            color: #34d399;
+        }
+
+        .telemetry-alert.error {
+            background: rgba(244, 63, 94, 0.1);
+            border: 1px solid rgba(244, 63, 94, 0.4);
+            color: var(--neon-rose);
+        }
+
+        /* Form Layout */
+        .consultation-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            min-width: 0;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            min-width: 0;
+        }
+
+        .form-label {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: #cbd5e1;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid var(--hud-border);
+            border-radius: 6px;
+            padding: 0.85rem 1.1rem;
+            color: #f8fafc;
+            font-family: inherit;
+            font-size: 0.95rem;
+            outline: none;
+            width: 100%;
+            box-sizing: border-box;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
+        }
+
+        .form-textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            align-self: flex-start;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: rgba(56, 189, 248, 0.15);
+            border: 1px solid var(--neon-cyan);
+            border-radius: 6px;
+            padding: 0.85rem 1.75rem;
+            color: #f8fafc;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            cursor: pointer;
+            transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+        }
+
+        .submit-btn:hover {
+            background: rgba(56, 189, 248, 0.3);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.5);
+            transform: translateY(-1px);
+        }
+
+        @media (max-width: 1024px) {
             .station-grid {
-                display: grid;
-                grid-template-columns: minmax(280px, 340px) minmax(0, 1fr);
-                gap: clamp(2rem, 3.5vw, 4rem);
-                align-items: start;
+                grid-template-columns: minmax(0, 1fr);
+                gap: 2rem;
             }
-
-            /* Contact Sidebar */
             .hud-sidebar {
-                position: sticky;
-                top: 2rem;
-                background: var(--hud-bg);
-                border: 1px solid var(--hud-border);
-                border-radius: 8px;
-                padding: 1.75rem;
-                backdrop-filter: blur(12px);
-                min-width: 0;
+                position: static;
             }
+        }
 
-            .sidebar-header {
-                font-size: 0.75rem;
-                color: var(--neon-cyan);
-                letter-spacing: 0.12em;
-                margin-bottom: 1.25rem;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-                padding-bottom: 0.6rem;
-                font-family: var(--font-mono);
-            }
-
-            .meta-row {
-                margin-bottom: 1.25rem;
-            }
-
-            .meta-label {
-                font-size: 0.72rem;
-                color: #94a3b8;
-                text-transform: uppercase;
-                letter-spacing: 0.08em;
-                margin-bottom: 0.25rem;
-                font-family: var(--font-mono);
-            }
-
-            .meta-val {
-                font-size: 0.88rem;
-                color: #f8fafc;
-                line-height: 1.45;
-            }
-
-            .status-pill {
-                display: inline-block;
-                background: rgba(52, 211, 153, 0.15);
-                border: 1px solid rgba(52, 211, 153, 0.5);
-                color: #34d399;
-                padding: 0.25rem 0.6rem;
-                border-radius: 4px;
-                font-size: 0.75rem;
-                font-family: var(--font-mono);
-            }
-
-            /* Main Content Stream */
-            .main-stream {
-                background: rgba(7, 12, 24, 0.75);
-                border: 1px solid var(--hud-border);
-                border-radius: 8px;
-                padding: clamp(1.75rem, 3.5vw, 3.5rem);
-                min-width: 0;
-            }
-
-            .page-tag {
-                font-size: 0.8rem;
-                color: var(--neon-blue);
-                letter-spacing: 0.1em;
-                margin-bottom: 0.5rem;
-                font-family: var(--font-mono);
-            }
-
-            .page-title {
-                font-family: var(--font-display);
-                font-size: clamp(2rem, 3.2vw, 3.2rem);
-                line-height: 1.25;
-                color: #f8fafc;
-                margin-bottom: 1.75rem;
-            }
-
-            .page-lead {
-                font-size: clamp(1rem, 1.25vw, 1.15rem);
-                color: #e2e8f0;
-                line-height: 1.85;
-                border-left: 4px solid var(--neon-cyan);
-                background: rgba(56, 189, 248, 0.05);
-                padding: 1.5rem 1.75rem;
-                border-radius: 0 8px 8px 0;
-                margin-bottom: 2.5rem;
-            }
-
-            /* Feedback Banners */
-            .telemetry-alert {
-                padding: 1rem 1.25rem;
-                border-radius: 6px;
-                margin-bottom: 2rem;
-                display: flex;
-                align-items: center;
-                gap: 1rem;
-                font-family: var(--font-mono);
-                font-size: 0.88rem;
-            }
-
-            .telemetry-alert.success {
-                background: rgba(52, 211, 153, 0.1);
-                border: 1px solid rgba(52, 211, 153, 0.4);
-                color: #34d399;
-            }
-
-            .telemetry-alert.error {
-                background: rgba(244, 63, 94, 0.1);
-                border: 1px solid rgba(244, 63, 94, 0.4);
-                color: var(--neon-rose);
-            }
-
-            /* Form Layout */
-            .consultation-form {
-                display: flex;
-                flex-direction: column;
-                gap: 1.5rem;
-                min-width: 0;
-            }
-
+        @media (max-width: 640px) {
             .form-row {
-                display: grid;
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-                gap: 1.5rem;
+                grid-template-columns: minmax(0, 1fr);
+                gap: 1.25rem;
             }
-
-            .form-group {
-                display: flex;
-                flex-direction: column;
-                gap: 0.5rem;
-                min-width: 0;
+            .main-stream {
+                padding: 1.5rem 1.25rem;
             }
+        }
+    </style>
 
-            .form-label {
-                font-family: var(--font-mono);
-                font-size: 0.75rem;
-                color: #cbd5e1;
-                letter-spacing: 0.06em;
-                text-transform: uppercase;
-            }
+    <main class="responsive-shell">
+        <a href="/" class="back-btn" aria-label="Return to Homepage">
+            ← RETURN TO PORTFOLIO HOME
+        </a>
 
-            .form-input,
-            .form-select,
-            .form-textarea {
-                background: rgba(15, 23, 42, 0.85);
-                border: 1px solid var(--hud-border);
-                border-radius: 6px;
-                padding: 0.85rem 1.1rem;
-                color: #f8fafc;
-                font-family: inherit;
-                font-size: 0.95rem;
-                outline: none;
-                width: 100%;
-                box-sizing: border-box;
-                transition: border-color 0.2s ease, box-shadow 0.2s ease;
-            }
+        <div class="station-grid">
+            <!-- Contact Sidebar -->
+            <aside class="hud-sidebar" aria-label="Engagement Details">
+                <div class="sidebar-header">CONSULTATION DETAILS</div>
 
-            .form-input:focus,
-            .form-select:focus,
-            .form-textarea:focus {
-                border-color: var(--neon-cyan);
-                box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
-            }
+                <div class="meta-row">
+                    <div class="meta-label">DIRECT CHANNEL</div>
+                    <div class="meta-val">Consultation & Project Inquiry</div>
+                </div>
 
-            .form-textarea {
-                min-height: 150px;
-                resize: vertical;
-            }
+                <div class="meta-row">
+                    <div class="meta-label">PRIMARY REGION</div>
+                    <div class="meta-val" style="color: var(--neon-cyan);">London & South East (UK-Wide on Brief)</div>
+                </div>
 
-            .submit-btn {
-                align-self: flex-start;
-                display: inline-flex;
-                align-items: center;
-                gap: 0.6rem;
-                background: rgba(56, 189, 248, 0.15);
-                border: 1px solid var(--neon-cyan);
-                border-radius: 6px;
-                padding: 0.85rem 1.75rem;
-                color: #f8fafc;
-                font-family: var(--font-mono);
-                font-size: 0.85rem;
-                font-weight: 700;
-                letter-spacing: 0.08em;
-                cursor: pointer;
-                transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
-            }
+                <div class="meta-row">
+                    <div class="meta-label">RESPONSE TIMEFRAME</div>
+                    <div class="meta-val">&le; 24 Working Hours</div>
+                </div>
 
-            .submit-btn:hover {
-                background: rgba(56, 189, 248, 0.3);
-                box-shadow: 0 0 20px rgba(56, 189, 248, 0.5);
-                transform: translateY(-1px);
-            }
+                <div class="meta-row">
+                    <div class="meta-label">PRACTICE STATUS</div>
+                    <div class="meta-val"><span class="status-pill">AVAILABLE FOR CONSULTING</span></div>
+                </div>
+            </aside>
 
-            @media (max-width: 1024px) {
-                .station-grid {
-                    grid-template-columns: minmax(0, 1fr);
-                    gap: 2rem;
-                }
-                .hud-sidebar {
-                    position: static;
-                }
-            }
+            <!-- Main Content Stream -->
+            <section class="main-stream">
+                <div class="page-tag">STATION // 04</div>
+                <h1 class="page-title">Engineering Consultation & Enquiries</h1>
+                <p class="page-lead">
+                    Direct channel to commission MEP asset condition surveys, plant lifecycle models (CIBSE Guide M / RICS NRM3), statutory compliance appraisals, or discuss engineering research collaborations.
+                </p>
 
-            @media (max-width: 640px) {
-                .form-row {
-                    grid-template-columns: minmax(0, 1fr);
-                    gap: 1.25rem;
-                }
-                .main-stream {
-                    padding: 1.5rem 1.25rem;
-                }
-            }
-        </style>
-    </head>
-    <body>
-        <main class="responsive-shell">
-            <a href="/" class="back-btn" aria-label="Return to Homepage">
-                ← RETURN TO PORTFOLIO HOME
-            </a>
-
-            <div class="station-grid">
-                <!-- Contact Sidebar -->
-                <aside class="hud-sidebar" aria-label="Engagement Details">
-                    <div class="sidebar-header">CONSULTATION DETAILS</div>
-
-                    <div class="meta-row">
-                        <div class="meta-label">DIRECT CHANNEL</div>
-                        <div class="meta-val">Consultation &amp; Project Inquiry</div>
-                    </div>
-
-                    <div class="meta-row">
-                        <div class="meta-label">PRIMARY REGION</div>
-                        <div class="meta-val" style="color: var(--neon-cyan);">London &amp; South East (UK-Wide on Brief)</div>
-                    </div>
-
-                    <div class="meta-row">
-                        <div class="meta-label">RESPONSE TIMEFRAME</div>
-                        <div class="meta-val">&le; 24 Working Hours</div>
-                    </div>
-
-                    <div class="meta-row">
-                        <div class="meta-label">PRACTICE STATUS</div>
-                        <div class="meta-val"><span class="status-pill">AVAILABLE FOR CONSULTING</span></div>
-                    </div>
-                </aside>
-
-                <!-- Main Content Stream -->
-                <section class="main-stream">
-                    <div class="page-tag">STATION // 04</div>
-                    <h1 class="page-title">Engineering Consultation &amp; Enquiries</h1>
-                    <p class="page-lead">
-                        Direct channel to commission MEP asset condition surveys, plant lifecycle models (CIBSE Guide M / RICS NRM3), statutory compliance appraisals, or discuss engineering research collaborations.
-                    </p>
-
-                    <!-- Success Feedback Alert -->
-                    {status === 'success' && (
-                        <div class="telemetry-alert success">
-                            <span>✓</span>
-                            <div>
-                                <strong>BRIEF SUBMITTED:</strong> Your inquiry has been received. Expect a response within &le; 24 working hours.
-                            </div>
+                <!-- Success Feedback Alert -->
+                {status === 'success' && (
+                    <div class="telemetry-alert success">
+                        <span>✓</span>
+                        <div>
+                            <strong>BRIEF SUBMITTED:</strong> Your inquiry has been received. Expect a response within &le; 24 working hours.
                         </div>
-                    )}
+                    </div>
+                )}
 
-                    <!-- Error Feedback Alert -->
-                    {status === 'error' && (
-                        <div class="telemetry-alert error">
-                            <span>⚠️</span>
-                            <div>
-                                <strong>SUBMISSION ERROR:</strong> An error occurred while routing your message. Please retry or contact directly via LinkedIn.
-                            </div>
+                <!-- Error Feedback Alert -->
+                {status === 'error' && (
+                    <div class="telemetry-alert error">
+                        <span>⚠️</span>
+                        <div>
+                            <strong>SUBMISSION ERROR:</strong> An error occurred while routing your message. Please retry or contact directly via LinkedIn.
                         </div>
-                    )}
+                    </div>
+                )}
 
-                    <form class="consultation-form" action="/api/contact" method="POST">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="contact-name" class="form-label">Full Name / Organisation</label>
-                                <input
-                                    type="text"
-                                    id="contact-name"
-                                    name="name"
-                                    class="form-input"
-                                    placeholder="e.g. Alex Mercer, Estates Director"
-                                    required
-                                />
-                            </div>
-                            <div class="form-group">
-                                <label for="contact-email" class="form-label">Professional Email Address</label>
-                                <input
-                                    type="email"
-                                    id="contact-email"
-                                    name="email"
-                                    class="form-input"
-                                    placeholder="e.g. a.mercer@estates.co.uk"
-                                    required
-                                />
-                            </div>
-                        </div>
-
+                <form class="consultation-form" action="/api/contact" method="POST">
+                    <div class="form-row">
                         <div class="form-group">
-                            <label for="contact-scope" class="form-label">Primary Engagement Scope</label>
-                            <select id="contact-scope" name="scope" class="form-select" required>
-                                <option value="Condition Survey">M&amp;E Asset Condition Survey &amp; Asset Register (AIM)</option>
-                                <option value="Lifecycle Modelling">10–20 Year Forward Capital Planning &amp; CIBSE Lifecycle Modelling</option>
-                                <option value="Statutory Compliance">Statutory Compliance Audit (SFG20 / BS 7671 / Part L / L8)</option>
-                                <option value="Dilapidations & PFI">Dilapidation Survey / PFI Asset Review</option>
-                                <option value="Academic Collaboration">Tribology &amp; Engineering Research Collaboration</option>
-                                <option value="General Consultation">General Building Services Consultation</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="contact-message" class="form-label">Project Brief &amp; Site Specification</label>
-                            <textarea
-                                id="contact-message"
-                                name="message"
-                                class="form-textarea"
-                                placeholder="Provide site location, portfolio scale, plant systems under review, or key technical objectives..."
+                            <label for="contact-name" class="form-label">Full Name / Organisation</label>
+                            <input
+                                type="text"
+                                id="contact-name"
+                                name="name"
+                                class="form-input"
+                                placeholder="e.g. Alex Mercer, Estates Director"
                                 required
-                            ></textarea>
+                            />
                         </div>
+                        <div class="form-group">
+                            <label for="contact-email" class="form-label">Professional Email Address</label>
+                            <input
+                                type="email"
+                                id="contact-email"
+                                name="email"
+                                class="form-input"
+                                placeholder="e.g. a.mercer@estates.co.uk"
+                                required
+                            />
+                        </div>
+                    </div>
 
-                        <button type="submit" class="submit-btn" aria-label="Submit consultation brief to Nathan Jarvis">
-                            <span>SUBMIT CONSULTATION BRIEF</span>
-                            <span>→</span>
-                        </button>
-                    </form>
-                </section>
-            </div>
-        </main>
-        <Footer />
-    </body>
-</html>
+                    <div class="form-group">
+                        <label for="contact-scope" class="form-label">Primary Engagement Scope</label>
+                        <select id="contact-scope" name="scope" class="form-select" required>
+                            <option value="Condition Survey">M&E Asset Condition Survey & Asset Register (AIM)</option>
+                            <option value="Lifecycle Modelling">10–20 Year Forward Capital Planning & CIBSE Lifecycle Modelling</option>
+                            <option value="Statutory Compliance">Statutory Compliance Audit (SFG20 / BS 7671 / Part L / L8)</option>
+                            <option value="Dilapidations & PFI">Dilapidation Survey / PFI Asset Review</option>
+                            <option value="Academic Collaboration">Tribology & Engineering Research Collaboration</option>
+                            <option value="General Consultation">General Building Services Consultation</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="contact-message" class="form-label">Project Brief & Site Specification</label>
+                        <textarea
+                            id="contact-message"
+                            name="message"
+                            class="form-textarea"
+                            placeholder="Provide site location, portfolio scale, plant systems under review, or key technical objectives..."
+                            required
+                        ></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-btn" aria-label="Submit consultation brief to Nathan Jarvis">
+                        <span>SUBMIT CONSULTATION BRIEF</span>
+                        <span>→</span>
+                    </button>
+                </form>
+            </section>
+        </div>
+    </main>
+    <Footer />
+</Layout>
