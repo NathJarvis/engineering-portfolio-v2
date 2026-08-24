@@ -2,7 +2,7 @@
 layout: ../../layouts/DeepDiveLayout.astro
 title: "Beyond the Sheet Metal: The Hidden Mechanics of AHU Performance Drift"
 category: "ASSET MANAGEMENT & ENERGY"
-publishDate: "AUGUST 2026"
+publishDate: "26 JULY 2026"
 description: "A systems engineering lens (T192) to the mechanical dynamics inside an AHU, focusing on mechanical power transmission, internal performance drift, and how EC fan retrofits can redefine the operational baseline."
 typstPdfUrl: "/papers/Deep-Dive-2.pdf"
 externalUrl: "https://www.linkedin.com/pulse/beyond-sheet-metal-hidden-mechanics-ahu-performance-drift-jarvis-9wbve/"
@@ -22,7 +22,7 @@ Belt Drive System - A traditional setup where the motor is physically separated 
 
 <figure style="margin: 2rem 0; text-align: center;">
   <img 
-    src="../images/belt-drive.png" 
+    src="src\images\belt-drive.png" 
     alt="Energy consumption comparison" 
     style="max-width: 100%; border: 1px solid var(--hud-border); border-radius: 6px;"
   />
@@ -35,7 +35,7 @@ Direct Drive System - A modern approach that eliminates several mechanical movin
 
 <figure style="margin: 2rem 0; text-align: center;">
   <img 
-    src="../images/direct-drive.png" 
+    src="src/images/direct-drive.png" 
     alt="Energy consumption comparison" 
     style="max-width: 100%; border: 1px solid var(--hud-border); border-radius: 6px;"
   />
@@ -82,7 +82,7 @@ During the design phase every component within an AHU is selected to deliver a s
 
 <figure style="margin: 2rem 0; text-align: center;">
   <img 
-    src="../images/comparison-table.png" 
+    src="src/images/comparison-table.png" 
     alt="Table of comparison for Belt Driven and Direct Drive" 
     style="max-width: 100%; border: 1px solid var(--hud-border); border-radius: 6px;"
   />

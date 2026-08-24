@@ -3,7 +3,7 @@ layout: ../../layouts/DeepDiveLayout.astro
 title: "The Hidden Cost of Buzzing Corridors: T12 & T8 Energy Economics"
 tag: "DEEP DIVE // 01"
 category: "ASSET MANAGEMENT & ENERGY"
-publishDate: "AUGUST 2026"
+publishDate: "18 JULY 2026"
 description: "Evaluating the parasitic losses of magnetic ballasts, UK RoHS & Ecodesign phase-outs, and the empirical lifecycle payback of LED retrofits across commercial estates."
 typstPdfUrl: "/papers/Deep-Dive-1.pdf"
 externalUrl: "https://www.linkedin.com/pulse/hidden-cost-buzzing-corridors-t193-energy-economics-nathan-jarvis-ctnie/"
